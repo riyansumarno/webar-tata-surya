@@ -1,30 +1,35 @@
-WEBAR TATA SURYA — v5 MOBILE FULLSCREEN
+WEBAR TATA SURYA v6 — GITHUB PAGES
 
-Perubahan utama v5:
-1. Mode AR hanya memakai satu stream kamera. Preview kamera terpisah pada halaman AR dihapus.
-2. Video kamera dan canvas AR dipaksa memenuhi 100vw x tinggi viewport aktual smartphone.
-3. Background kamera memakai elemen <video> asli, bukan videoTexture WebGL, untuk kompatibilitas mobile yang lebih baik.
-4. AR.js dipatok ke versi 3.4.8 dan A-Frame 1.6.0.
-5. Ada watchdog: bila stream/elemen kamera berhenti, pengguna mendapat pesan dan tombol mulai ulang.
-6. camera-test.html juga dibuat fullscreen untuk memisahkan masalah kamera browser dari masalah AR.js.
+Tujuan versi ini:
+- Deployment langsung ke GitHub Pages.
+- Kamera smartphone fullscreen.
+- Marker tracking dengan AR.js.
+- Tata Surya dirender di atas marker.
 
-GITHUB PAGES
-Unggah/replace seluruh isi folder ini ke root repository webar-tata-surya.
-Kemudian buka:
-- index.html            halaman utama
-- camera-test.html      tes kamera fullscreen tanpa AR.js
-- ar-marker.html        AR marker Tata Surya
-- marker.html           marker yang harus dipindai
+CARA MEMPERBARUI GITHUB
+1. Buka repository webar-tata-surya.
+2. Ganti isi repository dengan file/folder dari paket ini.
+3. Pastikan index.html berada di root repository.
+4. Pastikan folder assets ikut diunggah.
+5. Commit perubahan ke branch yang digunakan GitHub Pages.
+6. Setelah deployment GitHub Pages selesai, buka:
+   https://riyansumarno.github.io/webar-tata-surya/?v=6
+7. Untuk langsung menguji AR:
+   https://riyansumarno.github.io/webar-tata-surya/ar-marker.html?v=6
 
-URUTAN TES YANG DISARANKAN
-A. Buka camera-test.html dari smartphone.
-   - Kamera harus memenuhi seluruh layar.
-   - Diamkan 30-60 detik. Kamera seharusnya tidak hilang/menjadi hitam.
-B. Bila A berhasil, buka ar-marker.html.
-   - Tekan Mulai AR & Kamera.
-   - Izinkan kamera.
-   - Tampilkan marker di perangkat lain atau cetak.
-   - Arahkan seluruh marker ke area panduan di tengah layar.
+PENGUJIAN AR
+1. Buka marker.html pada perangkat kedua atau cetak marker.
+2. Di smartphone utama, buka ar-marker.html?v=6.
+3. Tekan Mulai AR & Kamera.
+4. Izinkan akses kamera.
+5. Arahkan seluruh marker ke kamera.
+6. Saat marker terdeteksi, Matahari fallback berwarna kuning harus langsung terlihat.
+7. Setelah itu Tata Surya lengkap dirender oleh Three.js.
 
-CATATAN
-A-Frame dan AR.js masih dimuat dari URL HTTPS versi tetap. Koneksi internet diperlukan saat halaman AR pertama kali dimuat, kecuali library tersebut sudah tersimpan di cache browser.
+PERUBAHAN UTAMA v6
+- CSS tidak lagi memaksa semua elemen canvas menjadi fullscreen.
+- Hanya canvas WebGL A-Frame (.a-canvas) yang ditampilkan sebagai layer AR.
+- Canvas internal AR.js dipindahkan keluar viewport agar tidak menutupi renderer.
+- Ditambahkan fallback Sun native A-Frame sebagai indikator rendering.
+- logarithmicDepthBuffer dihapus untuk meningkatkan kompatibilitas smartphone.
+- Mesh Tata Surya tidak menggunakan frustum culling.

@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>AR Tata Surya — Marker v5</title>
+<title>AR Tata Surya — Marker v6</title>
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.8/aframe/build/aframe-ar.js"></script>
 <style>
 :root{color-scheme:dark;--vh:100dvh}*{box-sizing:border-box}
 html,body{margin:0!important;padding:0!important;width:100%!important;height:100%!important;overflow:hidden!important;background:#000!important;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;overscroll-behavior:none}
-#stage,a-scene,.a-canvas,canvas{position:fixed!important;inset:0!important;width:100vw!important;height:var(--vh)!important;margin:0!important;padding:0!important}
-#stage{z-index:1;background:#000}a-scene{z-index:2!important;background:transparent!important}.a-canvas,canvas{z-index:3!important;background:transparent!important;display:block!important}
+#stage,a-scene,.a-canvas{position:fixed!important;inset:0!important;width:100vw!important;height:var(--vh)!important;margin:0!important;padding:0!important}
+#stage{z-index:1;background:#000}a-scene{z-index:2!important;background:transparent!important}.a-canvas{z-index:3!important;background:transparent!important;display:block!important;visibility:visible!important;opacity:1!important}
+/* AR.js creates internal processing canvases. Never let them cover the WebGL renderer. */
+canvas:not(.a-canvas){position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;z-index:-10!important}
 video,video#arjs-video,.arjs-video{position:fixed!important;inset:0!important;width:100vw!important;height:var(--vh)!important;min-width:100vw!important;min-height:var(--vh)!important;object-fit:cover!important;object-position:center!important;z-index:1!important;background:#000!important;display:block!important;visibility:visible!important;opacity:1!important}
 .hidden{display:none!important}
 .startScreen{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 18%,#163356 0,#091421 43%,#02050a 100%)}
@@ -33,7 +35,7 @@ setVh();addEventListener('resize',setVh);addEventListener('orientationchange',()
 function out(msg,err=false){const el=$('diag');if(!el)return;el.textContent=msg;el.classList.toggle('error',err)}
 function status(msg){const el=$('status');if(el)el.textContent=msg}
 function enforceFullscreen(){
- const v=document.querySelector('video');const c=document.querySelector('.a-canvas,canvas');const scene=$('arScene');
+ const v=document.querySelector('video');const c=document.querySelector('.a-canvas');const scene=$('arScene');
  [v,c,scene].forEach(el=>{if(!el)return;el.style.setProperty('position','fixed','important');el.style.setProperty('inset','0','important');el.style.setProperty('width','100vw','important');el.style.setProperty('height',`${window.innerHeight}px`,'important');el.style.setProperty('margin','0','important')});
  if(v){videoSeen=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');v.muted=true;v.autoplay=true;v.style.setProperty('object-fit','cover','important');v.style.setProperty('z-index','1','important');if(v.paused)v.play().catch(()=>{});const stream=v.srcObject;if(stream){const tr=stream.getVideoTracks?.()[0];if(tr&&!tr.__watched){tr.__watched=true;tr.addEventListener('ended',()=>showProblem('Stream kamera berhenti. Tekan “Mulai ulang kamera”.'))}}}
  if(c){c.style.setProperty('z-index','3','important');c.style.setProperty('background','transparent','important')}
@@ -42,11 +44,11 @@ function enforceFullscreen(){
 function showProblem(msg){$('problemText').textContent=msg;$('problem').classList.remove('hidden')}
 function hideProblem(){$('problem').classList.add('hidden')}
 function basicMat(color,opacity=1){return new THREE.MeshBasicMaterial({color,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity>=1})}
-function sphere(r,color){return new THREE.Mesh(new THREE.SphereGeometry(r,28,18),basicMat(color))}
+function sphere(r,color){return new THREE.Mesh(new THREE.SphereGeometry(r,32,24),basicMat(color))}
 function orbitRing(r){const g=new THREE.RingGeometry(r-.004,r+.004,96);const m=basicMat(0xb9c7d8,.62);const mesh=new THREE.Mesh(g,m);mesh.rotation.x=-Math.PI/2;mesh.position.y=.018;return mesh}
 function buildSolar(marker){
  if(solarBuilt||!marker?.object3D||!window.THREE)return;
- const root=new THREE.Group();root.name='solar-system-v5';root.position.set(0,.12,0);root.scale.set(.9,.9,.9);
+ const root=new THREE.Group();root.name='solar-system-v6';root.position.set(0,.10,0);root.scale.set(.78,.78,.78);
  // Visible base halo makes successful rendering immediately obvious.
  const halo=new THREE.Mesh(new THREE.RingGeometry(.12,.165,64),basicMat(0xffc85a,.32));halo.rotation.x=-Math.PI/2;halo.position.y=.015;root.add(halo);
  const sun=sphere(.14,0xffb31a);sun.position.y=.14;root.add(sun);
@@ -61,28 +63,32 @@ function buildSolar(marker){
   if(i===5){const rg=new THREE.RingGeometry(rad*1.35,rad*1.9,48);const rm=basicMat(0xeadca9,.88);const rr=new THREE.Mesh(rg,rm);rr.rotation.x=-Math.PI/2;rr.position.copy(p.position);pivot.add(rr)}
   root.add(pivot);solar.pivots.push({obj:pivot,period});
  });
- marker.object3D.add(root);solarBuilt=true;
+ root.traverse(o=>{if(o.isMesh){o.frustumCulled=false;o.renderOrder=10}});marker.object3D.add(root);marker.object3D.updateMatrixWorld(true);root.visible=true;solarBuilt=true;
 }
 function animateSolar(t){
  if(!lastTime)lastTime=t;const dt=Math.min((t-lastTime)/1000,.05);lastTime=t;
  if(!solar.paused){solar.pivots.forEach(x=>{x.obj.rotation.y+=dt*solar.speed*(Math.PI*2/x.period)})}
  requestAnimationFrame(animateSolar);
 }
-function sceneMarkup(){return `<a-scene id="arScene" embedded vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" renderer="alpha:true;antialias:true;precision:medium;logarithmicDepthBuffer:true" arjs="sourceType:webcam;debugUIEnabled:false;detectionMode:mono;maxDetectionRate:30;patternRatio:0.5;">
-<a-marker id="solarMarker" emitevents="true" type="pattern" url="assets/marker-giting-ar.patt" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2"></a-marker>
+function sceneMarkup(){return `<a-scene id="arScene" embedded vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" renderer="alpha:true;antialias:true;precision:medium" arjs="sourceType:webcam;debugUIEnabled:false;detectionMode:mono;maxDetectionRate:30;patternRatio:0.5;">
+<a-marker id="solarMarker" emitevents="true" type="pattern" url="assets/marker-giting-ar.patt" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
+  <!-- Native A-Frame fallback: if tracking works, this Sun must be visible even before JS solar setup. -->
+  <a-sphere id="fallbackSun" position="0 0.22 0" radius="0.14" color="#FFB31A" material="shader:flat"></a-sphere>
+  <a-ring position="0 0.03 0" rotation="-90 0 0" radius-inner="0.16" radius-outer="0.18" color="#FFD36A" material="shader:flat;transparent:true;opacity:0.55;side:double"></a-ring>
+</a-marker>
 <a-entity camera></a-entity>
 </a-scene>`}
 function bindEvents(){
  const scene=$('arScene'),marker=$('solarMarker');if(!scene||!marker){setTimeout(bindEvents,80);return}
  scene.addEventListener('loaded',()=>{buildSolar(marker);status('Kamera aktif • arahkan ke marker');enforceFullscreen()});
  scene.addEventListener('render-target-loaded',()=>{buildSolar(marker);enforceFullscreen();if(scene.renderer)scene.renderer.setClearColor(0x000000,0)});
- marker.addEventListener('markerFound',()=>{buildSolar(marker);status('Marker terdeteksi • Tata Surya tampil');$('guide').classList.add('hidden')});
+ marker.addEventListener('markerFound',()=>{buildSolar(marker);marker.object3D.visible=true;marker.object3D.updateMatrixWorld(true);status('Marker terdeteksi • renderer aktif');$('guide').classList.add('hidden')});
  marker.addEventListener('markerLost',()=>{status('Cari marker…');$('guide').classList.remove('hidden')});
 }
 async function startAR(){
  if(started)return;const btn=$('startBtn');btn.disabled=true;out('Menyalakan kamera AR…');
  try{
-  if(!window.isSecureContext)throw new Error('Akses kamera memerlukan HTTPS atau localhost.');
+  if(!window.isSecureContext)throw new Error('Akses kamera memerlukan HTTPS.');
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Browser tidak menyediakan getUserMedia.');
   if(!window.AFRAME||!window.THREE)throw new Error('A-Frame gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.');
   const probe=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});probe.getTracks().forEach(t=>t.stop());
@@ -99,7 +105,7 @@ addEventListener('DOMContentLoaded',()=>{
  $('startBtn').onclick=startAR;$('restartBtn').onclick=restart;$('problemRestart').onclick=restart;$('dismissProblem').onclick=hideProblem;$('fullBtn').onclick=fullScreen;
  $('pauseBtn').onclick=e=>{solar.paused=!solar.paused;e.currentTarget.textContent=solar.paused?'▶ Lanjut':'⏸ Jeda'};
  $('speed').oninput=e=>{solar.speed=Number(e.target.value);$('speedText').textContent=solar.speed.toFixed(1)+'×'};
- if(!window.isSecureContext)out('Halaman ini harus dibuka melalui HTTPS atau localhost.',true);
+ if(!window.isSecureContext)out('Halaman ini harus dibuka melalui HTTPS.',true);
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(enforceFullscreen,150)});
 addEventListener('pagehide',()=>{if(watchdog)clearInterval(watchdog);document.querySelectorAll('video').forEach(v=>v.srcObject?.getTracks?.().forEach(t=>t.stop()))});

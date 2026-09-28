@@ -1,6 +1,6 @@
-WEBAR TATA SURYA — v4 MOBILE FULLSCREEN
+WEBAR TATA SURYA — v5 MOBILE FULLSCREEN
 
-Perubahan utama v4:
+Perubahan utama v5:
 1. Mode AR hanya memakai satu stream kamera. Preview kamera terpisah pada halaman AR dihapus.
 2. Video kamera dan canvas AR dipaksa memenuhi 100vw x tinggi viewport aktual smartphone.
 3. Background kamera memakai elemen <video> asli, bukan videoTexture WebGL, untuk kompatibilitas mobile yang lebih baik.

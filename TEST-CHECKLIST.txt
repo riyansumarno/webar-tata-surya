@@ -1,4 +1,4 @@
-CHECKLIST v4
+CHECKLIST v5
 [ ] GitHub Pages dibuka melalui HTTPS.
 [ ] camera-test.html: izin kamera muncul.
 [ ] camera-test.html: feed kamera memenuhi seluruh viewport smartphone.

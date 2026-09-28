@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>AR Tata Surya — Marker v6</title>
+<title>AR Tata Surya — BETA</title>
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.8/aframe/build/aframe-ar.js"></script>
 <style>
@@ -48,7 +48,7 @@ function sphere(r,color){return new THREE.Mesh(new THREE.SphereGeometry(r,32,24)
 function orbitRing(r){const g=new THREE.RingGeometry(r-.004,r+.004,96);const m=basicMat(0xb9c7d8,.62);const mesh=new THREE.Mesh(g,m);mesh.rotation.x=-Math.PI/2;mesh.position.y=.018;return mesh}
 function buildSolar(marker){
  if(solarBuilt||!marker?.object3D||!window.THREE)return;
- const root=new THREE.Group();root.name='solar-system-v6';root.position.set(0,.10,0);root.scale.set(.78,.78,.78);
+ const root=new THREE.Group();root.name='solar-system-beta';root.position.set(0,.10,0);root.scale.set(.78,.78,.78);
  // Visible base halo makes successful rendering immediately obvious.
  const halo=new THREE.Mesh(new THREE.RingGeometry(.12,.165,64),basicMat(0xffc85a,.32));halo.rotation.x=-Math.PI/2;halo.position.y=.015;root.add(halo);
  const sun=sphere(.14,0xffb31a);sun.position.y=.14;root.add(sun);

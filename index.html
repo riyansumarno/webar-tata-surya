@@ -1,121 +1,151 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#07111f" />
-<title>WebAR Tata Surya — GitHub Pages</title>
-<style>
-:root{color-scheme:dark;--bg:#07111f;--panel:rgba(7,17,31,.88);--line:rgba(255,255,255,.14);--text:#f5f7fb;--muted:#aab6c6;--accent:#ffd166;--danger:#ff7b7b}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#030913;color:var(--text);overflow:hidden}
-button{font:inherit}.app{position:relative;width:100%;height:100%;background:radial-gradient(circle at 50% 0,#16385f 0,#07111f 42%,#030913 100%)}
-.view{display:none;position:absolute;inset:0}.view.active{display:block}.home{overflow:auto;padding:54px 20px 120px}.home-inner{max-width:940px;margin:auto}.badge{display:inline-block;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,209,102,.4);background:rgba(255,209,102,.1);color:#ffe7a0;font-size:.82rem;font-weight:800}.home h1{font-size:clamp(2.3rem,8vw,4.7rem);line-height:.95;letter-spacing:-.05em;margin:18px 0;max-width:820px}.lead{max-width:730px;line-height:1.65;color:var(--muted);font-size:1.04rem}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{border:1px solid var(--line);border-radius:14px;padding:12px 15px;font-weight:800;cursor:pointer;background:rgba(255,255,255,.08);color:#fff}.btn.primary{background:var(--accent);color:#251a00;border-color:transparent}.btn:active{transform:translateY(1px)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:34px}.card{padding:17px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.045)}.card strong{display:block;margin-bottom:6px}.card span{color:var(--muted);font-size:.92rem;line-height:1.5}
-.topbar{position:absolute;z-index:20;top:10px;left:10px;right:10px;display:flex;gap:8px;justify-content:space-between;pointer-events:none}.topbar>*{pointer-events:auto}.navgrp{display:flex;gap:7px;flex-wrap:wrap}.navbtn{border:1px solid var(--line);background:rgba(4,10,18,.82);backdrop-filter:blur(10px);color:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:700;font-size:.82rem}.status{position:absolute;z-index:18;top:58px;left:50%;transform:translateX(-50%);max-width:min(92vw,720px);padding:8px 12px;border-radius:999px;background:rgba(4,10,18,.76);border:1px solid var(--line);font-size:.82rem;text-align:center;backdrop-filter:blur(10px)}
-.scene{position:absolute;inset:0;background:#020712}.scene canvas{width:100%;height:100%;display:block;touch-action:none}.controls{position:absolute;z-index:20;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel);backdrop-filter:blur(12px)}.controls .btn{padding:9px 12px}.controls label{display:flex;align-items:center;gap:8px;font-size:.86rem}.controls .grow{flex:1 1 180px}.controls input[type=range]{width:min(35vw,180px)}
-.camera-wrap{position:absolute;inset:0;background:#000;overflow:hidden}.camera-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}.camera-wrap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.camera-msg{position:absolute;z-index:15;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,520px);padding:18px;border-radius:18px;background:rgba(5,12,22,.9);border:1px solid var(--line);text-align:center;line-height:1.5}.camera-msg.hidden{display:none}.camera-msg strong{display:block;margin-bottom:6px}.camera-msg p{margin:6px 0;color:var(--muted)}
-.marker{overflow:auto;background:#f7f7f7;color:#111;padding:72px 18px 100px;text-align:center}.marker-box{max-width:560px;margin:0 auto}.marker-art{width:min(82vw,480px);aspect-ratio:1;margin:22px auto;background:#fff;border:34px solid #111;display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.12)}.marker-core{width:72%;height:72%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:5%;transform:rotate(8deg)}.marker-core i{display:block;background:#111}.marker-core i:nth-child(2),.marker-core i:nth-child(4),.marker-core i:nth-child(5),.marker-core i:nth-child(7),.marker-core i:nth-child(10),.marker-core i:nth-child(12),.marker-core i:nth-child(13),.marker-core i:nth-child(15){background:transparent;border:7px solid #111}.marker p{color:#555;line-height:1.55}.notice{margin:18px auto 0;max-width:680px;padding:12px 14px;border-radius:14px;background:#fff3cd;color:#5f4a00;border:1px solid #f0d77b;font-size:.9rem;line-height:1.5}
-.toast{position:absolute;z-index:50;left:50%;bottom:86px;transform:translateX(-50%);max-width:min(92vw,620px);padding:10px 13px;border-radius:12px;background:#1d2a3c;border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:.84rem;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}.toast.error{background:#3a171a;border-color:rgba(255,123,123,.5)}
-@media(max-width:720px){.grid{grid-template-columns:1fr}.home{padding-top:42px}.status{top:58px}.controls{bottom:7px;left:7px;right:7px}.topbar{left:7px;right:7px;gap:5px}.navgrp{gap:4px;flex-wrap:nowrap}.navbtn{padding:8px 9px;font-size:.75rem}}
-@media print{body{overflow:visible}.app,.view{position:static;height:auto}.view{display:none!important}#markerView{display:block!important}.topbar,.notice{display:none!important}.marker{padding:0}.marker-art{box-shadow:none;margin:0 auto}}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07101f">
+<meta name="description" content="Laboratorium Tata Surya Interaktif — media pembelajaran berbasis web dengan jelajah planet, eksperimen, misi, kuis, dan AR beta.">
+<title>Laboratorium Tata Surya Interaktif</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="app" id="app">
-  <section class="view home active" id="homeView">
-    <div class="home-inner">
-      <span class="badge">WEB-BASED • GITHUB PAGES</span>
-      <h1>Tata Surya interaktif langsung dari browser.</h1>
-      <p class="lead">Pratinjau 3D dan AR Marker disiapkan untuk deployment langsung melalui GitHub Pages (HTTPS). Versi v6 memperbaiki layer canvas AR dan kompatibilitas kamera smartphone.</p>
-      <div class="actions">
-        <button class="btn primary" data-view="previewView">🪐 Coba Pratinjau</button>
-        <button class="btn" onclick="location.href='ar-marker.html'">📷 Coba AR Marker</button>
-        <button class="btn" onclick="location.href='marker.html'">▣ Tampilkan Marker</button>
-        <button class="btn" onclick="location.href='camera-test.html'">📱 Tes Kamera</button>
-      </div>
-      <div class="grid">
-        <div class="card"><strong>Single-page</strong><span>Menu berpindah tanpa memuat ulang URL atau query string.</span></div>
-        <div class="card"><strong>Tanpa library eksternal</strong><span>Pratinjau planet memakai Canvas bawaan browser agar lebih tahan error.</span></div>
-        <div class="card"><strong>Marker tracking</strong><span>Mode AR terpisah memakai AR.js dan marker pola khusus yang sudah disertakan dalam paket.</span></div>
-      </div>
+<div id="app" class="app-shell">
+  <header class="top-shell">
+    <button class="brand" data-route="home" aria-label="Beranda">
+      <span class="brand-orbit"><i></i></span>
+      <span><b>LAB ANTARIKSA</b><small>Tata Surya Interaktif</small></span>
+    </button>
+    <div class="top-actions">
+      <button class="icon-btn" id="soundToggle" title="Suara" aria-label="Suara">🔊</button>
+      <button class="profile-chip" data-route="progress"><span>⭐</span><b id="topPoints">0</b><small> poin</small></button>
     </div>
-  </section>
+  </header>
 
-  <section class="view" id="previewView">
-    <div class="scene"><canvas id="previewCanvas"></canvas></div>
-    <div class="topbar"><button class="navbtn keep" data-view="homeView">← Menu</button><div class="navgrp"><button class="navbtn" data-view="previewView">3D</button><button class="navbtn" onclick="location.href='ar-marker.html'">AR</button><button class="navbtn" onclick="location.href='marker.html'">Marker</button></div></div>
-    <div class="status">Geser kiri/kanan untuk mengubah sudut pandang.</div>
-    <div class="controls">
-      <button class="btn" id="pausePreview">⏸ Jeda</button>
-      <label class="grow">Kecepatan <input id="speedPreview" type="range" min="0.2" max="3" step="0.1" value="1"><strong id="speedPreviewText">1.0×</strong></label>
-      <label><input id="labelsPreview" type="checkbox" checked> Label</label>
-    </div>
-  </section>
-
-  <section class="view" id="arView">
-    <div class="camera-wrap">
-      <video id="cameraVideo" autoplay playsinline muted></video>
-      <canvas id="arCanvas"></canvas>
-      <div class="camera-msg" id="cameraMsg"><strong>Mode kamera belum aktif</strong><p>Tekan tombol “Aktifkan Kamera”. Browser akan meminta izin kamera bila didukung.</p><button class="btn primary" id="startCamera">Aktifkan Kamera</button></div>
-    </div>
-    <div class="topbar"><button class="navbtn keep" data-view="homeView">← Menu</button><div class="navgrp"><button class="navbtn" data-view="previewView">3D</button><button class="navbtn" onclick="location.href='ar-marker.html'">AR</button><button class="navbtn" onclick="location.href='marker.html'">Marker</button></div></div>
-    <div class="status" id="arStatus">Mode AR prototipe: objek 3D ditumpangkan di atas kamera.</div>
-    <div class="controls">
-      <button class="btn" id="pauseAR">⏸ Jeda</button>
-      <label class="grow">Kecepatan <input id="speedAR" type="range" min="0.2" max="3" step="0.1" value="1"><strong id="speedARText">1.0×</strong></label>
-      <label><input id="labelsAR" type="checkbox" checked> Label</label>
-    </div>
-  </section>
-
-  <section class="view marker" id="markerView">
-    <div class="topbar"><button class="navbtn keep" data-view="homeView">← Menu</button><div class="navgrp"><button class="navbtn" data-view="previewView">3D</button><button class="navbtn" onclick="location.href='ar-marker.html'">AR</button><button class="navbtn" onclick="location.href='marker.html'">Marker</button></div></div>
-    <div class="marker-box">
-      <h1>Marker prototipe</h1>
-      <p>Marker ini digunakan sebagai contoh target cetak. Pada versi final WebAR, tracking marker dapat diaktifkan setelah halaman dipublikasikan melalui HTTPS.</p>
-      <div class="marker-art" aria-label="Marker hitam putih">
-        <div class="marker-core">
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  <main id="mainContent">
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <div class="hero-stars" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <span class="pill">MEDIA PEMBELAJARAN INTERAKTIF</span>
+          <h1>Jelajahi Tata Surya.<br><span>Jangan cuma menghafal.</span></h1>
+          <p>Amati planet, lakukan eksperimen, selesaikan misi, lalu buktikan pemahamanmu melalui kuis.</p>
+          <div class="hero-actions">
+            <button class="btn primary large" data-route="learn">Mulai Belajar <span>→</span></button>
+            <button class="btn ghost large" data-route="explore">Jelajah Bebas</button>
+          </div>
+          <div class="hero-progress">
+            <div><span>Progres belajar</span><b id="heroProgressText">0%</b></div>
+            <div class="progress-line"><i id="heroProgressBar"></i></div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="mini-system">
+            <div class="mini-sun"></div>
+            <i class="orbit o1"><b></b></i><i class="orbit o2"><b></b></i><i class="orbit o3"><b></b></i><i class="orbit o4"><b></b></i>
+          </div>
         </div>
       </div>
-      <button class="btn primary" id="printMarker">Cetak Marker</button>
-      <div class="notice"><strong>Catatan:</strong> versi ini memprioritaskan tombol dan pratinjau yang benar-benar berjalan. Tracking marker penuh belum dipaksakan di file lokal karena membutuhkan lingkungan HTTPS dan library AR yang dapat dimuat.</div>
-    </div>
-  </section>
+
+      <div class="content-wrap home-sections">
+        <div class="section-title"><div><span>LANJUTKAN PERJALANAN</span><h2>Pilih aktivitas</h2></div><button class="text-btn" data-route="progress">Lihat progres</button></div>
+        <div class="activity-grid">
+          <button class="activity-card learn-card" data-route="learn"><span class="activity-icon">📚</span><div><small>Belajar Terbimbing</small><h3>5 langkah memahami Tata Surya</h3><p>Materi singkat dengan tugas eksplorasi.</p></div><b>→</b></button>
+          <button class="activity-card" data-route="explore"><span class="activity-icon">🪐</span><div><small>Jelajah 3D</small><h3>Sentuh dan pelajari planet</h3><p>Orbit hidup, profil planet, dan kontrol waktu.</p></div><b>→</b></button>
+          <button class="activity-card" data-route="experiment"><span class="activity-icon">🧪</span><div><small>Eksperimen</small><h3>Coba, amati, bandingkan</h3><p>Periode revolusi, skala, dan perbandingan.</p></div><b>→</b></button>
+          <button class="activity-card" data-route="missions"><span class="activity-icon">🚀</span><div><small>Misi</small><h3>Jadi Penjelajah Tata Surya</h3><p>5 tantangan untuk menguji eksplorasi.</p></div><b>→</b></button>
+          <button class="activity-card" data-route="quiz"><span class="activity-icon">🎯</span><div><small>Kuis</small><h3>Uji pemahamanmu</h3><p>10 soal dengan pembahasan langsung.</p></div><b>→</b></button>
+          <a class="activity-card ar-card" href="ar-marker.html"><span class="activity-icon">📷</span><div><small>AR • BETA</small><h3>Hadirkan Tata Surya</h3><p>Eksperimen kamera dan marker pada perangkat.</p></div><b>↗</b></a>
+        </div>
+
+        <div class="fact-strip"><div class="fact-orb">☀</div><div><small>FAKTA CEPAT</small><p id="quickFact">Tata Surya memiliki delapan planet utama.</p></div><button id="nextFact" class="round-btn">↻</button></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="learn">
+      <div class="page-head content-wrap"><div><span class="eyebrow">BELAJAR TERBIMBING</span><h1>Kenali Tata Surya langkah demi langkah.</h1><p>Setiap bagian berisi satu konsep utama dan satu aktivitas kecil.</p></div><div class="lesson-ring"><strong id="lessonCount">1</strong><small>/ 5</small></div></div>
+      <div class="content-wrap lesson-layout">
+        <aside class="lesson-nav" id="lessonNav"></aside>
+        <article class="lesson-panel">
+          <div class="lesson-visual"><canvas id="lessonCanvas"></canvas><div class="visual-hint" id="lessonHint">Amati simulasi</div></div>
+          <div class="lesson-copy"><span class="eyebrow" id="lessonEyebrow"></span><h2 id="lessonTitle"></h2><p id="lessonBody"></p><div class="task-box"><span>🎯 Tugas kecil</span><p id="lessonTask"></p></div><div class="row-actions"><button class="btn ghost" id="lessonPrev">← Sebelumnya</button><button class="btn primary" id="lessonNext">Lanjut →</button></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen full-screen-page" data-screen="explore">
+      <div class="space-stage" id="spaceStage"><canvas id="spaceCanvas"></canvas><div class="space-glow"></div></div>
+      <div class="explore-header"><button class="glass-btn" data-route="home">←</button><div><small>JELAJAH 3D</small><b id="exploreTitle">Tata Surya</b></div><button class="glass-btn" id="exploreHelp">?</button></div>
+      <div class="explore-tools"><button class="tool active" data-filter="all">Semua</button><button class="tool" data-filter="inner">Planet Dalam</button><button class="tool" data-filter="outer">Planet Luar</button></div>
+      <div class="explore-controls"><button class="control-btn" id="pauseOrbit">⏸</button><label><span>Waktu</span><input id="orbitSpeed" type="range" min="0.2" max="4" step="0.2" value="1"><b id="orbitSpeedText">1×</b></label><button class="control-btn" id="toggleLabels">Aa</button></div>
+      <div class="planet-sheet" id="planetSheet" aria-live="polite">
+        <button class="sheet-close" id="sheetClose">×</button><div class="planet-badge" id="planetBadge"></div><div class="sheet-head"><div><small id="planetType"></small><h2 id="planetName"></h2><p id="planetFact"></p></div><div class="planet-ball" id="planetBall"></div></div><div class="stat-grid" id="planetStats"></div><div class="sheet-actions"><button class="btn primary" id="compareThis">Bandingkan</button><button class="btn ghost" id="planetChallenge">Tantang Saya</button></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="experiment">
+      <div class="page-head content-wrap"><div><span class="eyebrow">LABORATORIUM</span><h1>Belajar dengan mencoba.</h1><p>Ubah variabel, amati hasilnya, lalu tarik kesimpulan.</p></div></div>
+      <div class="content-wrap exp-tabs"><button class="tab active" data-exp="orbit">⏱ Tahun Planet</button><button class="tab" data-exp="scale">📏 Skala Planet</button><button class="tab" data-exp="compare">⚖️ Perbandingan</button></div>
+      <div class="content-wrap">
+        <section class="experiment-card active" data-exp-panel="orbit">
+          <div class="exp-copy"><span class="eyebrow">EKSPERIMEN 01</span><h2>Berapa lama satu tahun di planet lain?</h2><p>Pilih planet, jalankan waktu, dan lihat seberapa cepat planet menyelesaikan satu revolusi dibanding Bumi.</p><label class="field"><span>Pilih planet</span><select id="orbitPlanetSelect"></select></label><div class="row-actions"><button class="btn primary" id="runYear">▶ Jalankan</button><button class="btn ghost" id="resetYear">Ulangi</button></div><div class="insight" id="orbitInsight">Pilih planet lalu jalankan simulasi.</div></div>
+          <div class="exp-visual"><canvas id="orbitExperimentCanvas"></canvas><div class="year-meter"><div><span>Waktu simulasi</span><b id="simDay">0 hari Bumi</b></div><div class="progress-line"><i id="yearProgress"></i></div></div></div>
+        </section>
+        <section class="experiment-card" data-exp-panel="scale">
+          <div class="exp-copy"><span class="eyebrow">EKSPERIMEN 02</span><h2>Seberapa besar planet dibanding Bumi?</h2><p>Geser pembanding. Ukuran lingkaran menggunakan rasio diameter planet terhadap Bumi.</p><label class="field"><span>Bandingkan dengan Bumi</span><select id="scalePlanetSelect"></select></label><div class="insight" id="scaleInsight"></div></div>
+          <div class="scale-stage"><div class="scale-item earth"><span>Bumi</span><i></i></div><div class="scale-item target"><span id="scaleTargetName"></span><i id="scaleTargetBall"></i></div></div>
+        </section>
+        <section class="experiment-card" data-exp-panel="compare">
+          <div class="exp-copy"><span class="eyebrow">EKSPERIMEN 03</span><h2>Bandingkan dua planet.</h2><p>Pilih dua planet dan cari persamaan maupun perbedaannya.</p><div class="compare-pickers"><select id="compareA"></select><span>VS</span><select id="compareB"></select></div><button class="btn primary" id="doCompare">Bandingkan</button></div>
+          <div class="compare-board" id="compareBoard"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="missions">
+      <div class="page-head content-wrap"><div><span class="eyebrow">MISI PENJELAJAH</span><h1>Selesaikan lima tantangan.</h1><p>Misi akan tercentang otomatis ketika aktivitas terkait selesai.</p></div><div class="points-card"><span>⭐</span><strong id="missionPoints">0</strong><small>poin</small></div></div>
+      <div class="content-wrap mission-list" id="missionList"></div>
+    </section>
+
+    <section class="screen" data-screen="quiz">
+      <div class="quiz-shell content-wrap">
+        <div class="quiz-intro" id="quizIntro"><span class="eyebrow">KUIS AKHIR</span><h1>Siap menguji pemahaman?</h1><p>Sepuluh soal. Setiap jawaban langsung disertai pembahasan. Nilai terbaik akan tersimpan di perangkat ini.</p><div class="quiz-meta"><span>🎯 10 soal</span><span>⭐ hingga 100 poin</span><span>💡 pembahasan langsung</span></div><button class="btn primary large" id="startQuiz">Mulai Kuis →</button></div>
+        <div class="quiz-box" id="quizBox" hidden><div class="quiz-top"><span id="quizNumber">Soal 1/10</span><span>Skor <b id="quizScore">0</b></span></div><div class="progress-line"><i id="quizProgress"></i></div><h2 id="quizQuestion"></h2><div class="choices" id="quizChoices"></div><div class="feedback" id="quizFeedback" hidden></div><button class="btn primary" id="nextQuestion" hidden>Lanjut →</button></div>
+        <div class="quiz-result" id="quizResult" hidden></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="progress">
+      <div class="page-head content-wrap"><div><span class="eyebrow">PROGRES BELAJAR</span><h1>Perjalananmu sejauh ini.</h1><p>Progres disimpan di browser perangkat ini tanpa akun.</p></div><button class="btn ghost" id="resetProgress">Reset progres</button></div>
+      <div class="content-wrap progress-dashboard">
+        <div class="big-progress"><div class="progress-ring" id="progressRing"><span><b id="progressPercent">0</b>%</span></div><div><small>PROGRES KESELURUHAN</small><h2 id="progressTitle">Baru mulai</h2><p id="progressDesc">Mulai satu aktivitas untuk mencatat progres.</p></div></div>
+        <div class="metric-grid"><div class="metric"><span>⭐</span><b id="metricPoints">0</b><small>Total poin</small></div><div class="metric"><span>🚀</span><b id="metricMissions">0/5</b><small>Misi selesai</small></div><div class="metric"><span>🎯</span><b id="metricQuiz">—</b><small>Nilai kuis terbaik</small></div><div class="metric"><span>🪐</span><b id="metricPlanets">0/8</b><small>Planet dijelajahi</small></div></div>
+        <div class="achievement-panel"><div class="section-title"><div><span>PENCAPAIAN</span><h2>Lencana</h2></div></div><div class="badge-grid" id="badgeGrid"></div></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="teacher">
+      <div class="page-head content-wrap"><div><span class="eyebrow">MODE GURU</span><h1>Kontrol sederhana untuk presentasi kelas.</h1><p>Gunakan halaman ini saat materi ditampilkan melalui proyektor atau layar kelas.</p></div></div>
+      <div class="content-wrap teacher-grid"><button class="teacher-card" data-route="learn"><span>01</span><h3>Materi Terbimbing</h3><p>Tampilkan konsep langkah demi langkah.</p></button><button class="teacher-card" data-route="explore"><span>02</span><h3>Demonstrasi Orbit</h3><p>Putar simulasi dan pilih planet.</p></button><button class="teacher-card" data-route="experiment"><span>03</span><h3>Eksperimen Kelas</h3><p>Bandingkan periode dan ukuran planet.</p></button><button class="teacher-card" data-route="quiz"><span>04</span><h3>Kuis Bersama</h3><p>Gunakan pertanyaan sebagai diskusi kelas.</p></button><button class="teacher-card" id="presentationMode"><span>⛶</span><h3>Layar Penuh</h3><p>Masuk mode presentasi browser.</p></button><button class="teacher-card" data-route="sources"><span>i</span><h3>Sumber Data</h3><p>Lihat rujukan fakta astronomi.</p></button></div>
+    </section>
+
+    <section class="screen" data-screen="sources">
+      <div class="page-head content-wrap"><div><span class="eyebrow">SUMBER & CATATAN</span><h1>Dasar data pembelajaran.</h1><p>Fakta utama planet pada prototipe ini merujuk sumber resmi NASA. Nilai tertentu dibulatkan untuk kebutuhan pembelajaran.</p></div></div>
+      <div class="content-wrap source-list" id="sourceList"></div><div class="content-wrap note-card"><h3>Catatan visualisasi</h3><p>Ukuran planet dan jarak orbit pada tampilan utama tidak digambar dalam satu skala fisik yang sama. Penyederhanaan ini disengaja supaya semua planet tetap terlihat pada layar. Eksperimen skala menggunakan perbandingan diameter terhadap Bumi.</p></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <button data-route="home" class="active"><span>⌂</span><small>Beranda</small></button>
+    <button data-route="learn"><span>▤</span><small>Belajar</small></button>
+    <button data-route="explore"><span>◎</span><small>Jelajah</small></button>
+    <button data-route="missions"><span>🚀</span><small>Misi</small></button>
+    <button data-route="teacher"><span>▣</span><small>Guru</small></button>
+  </nav>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden><div class="modal" id="modal"><button class="modal-close" id="modalClose">×</button><div id="modalContent"></div></div></div>
   <div class="toast" id="toast"></div>
 </div>
-<script>
-'use strict';
-const PLANETS=[
-{name:'Merkurius',color:'#aaa',size:4,orbit:.12,period:4.8},{name:'Venus',color:'#d6aa72',size:6,orbit:.18,period:7},{name:'Bumi',color:'#3385e6',size:6.5,orbit:.25,period:9},{name:'Mars',color:'#d05d3b',size:5,orbit:.32,period:11.5},{name:'Jupiter',color:'#c6a179',size:11,orbit:.42,period:15},{name:'Saturnus',color:'#d8c48e',size:9.5,orbit:.53,period:19,ring:true},{name:'Uranus',color:'#86d8e2',size:8,orbit:.64,period:23},{name:'Neptunus',color:'#466dd4',size:7.8,orbit:.75,period:28}
-];
-const state={speed:1,paused:false,labels:true,t:0,rotation:-.25,last:performance.now(),cameraStream:null,current:'homeView'};
-const $=id=>document.getElementById(id);
-function toast(msg,error=false){const t=$('toast');t.textContent=msg;t.className='toast show'+(error?' error':'');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.className='toast',2800)}
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));state.current=id;if(id!=='arView') stopCamera();resizeAll();}
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-$('printMarker').addEventListener('click',()=>window.print());
-
-function bindControl(prefix){const pause=$('pause'+prefix),speed=$('speed'+prefix),speedText=$('speed'+prefix+'Text'),labels=$('labels'+prefix);pause.addEventListener('click',()=>{state.paused=!state.paused;document.querySelectorAll('#pausePreview,#pauseAR').forEach(x=>x.textContent=state.paused?'▶ Lanjutkan':'⏸ Jeda')});speed.addEventListener('input',()=>{state.speed=Number(speed.value);$('speedPreview').value=state.speed;$('speedAR').value=state.speed;$('speedPreviewText').textContent=state.speed.toFixed(1)+'×';$('speedARText').textContent=state.speed.toFixed(1)+'×'});labels.addEventListener('change',()=>{state.labels=labels.checked;$('labelsPreview').checked=state.labels;$('labelsAR').checked=state.labels})}
-bindControl('Preview');bindControl('AR');
-
-function setupDrag(canvas){let down=false,lastX=0;const start=x=>{down=true;lastX=x};const move=x=>{if(!down)return;state.rotation+=(x-lastX)*.007;lastX=x};canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);start(e.clientX)});canvas.addEventListener('pointermove',e=>move(e.clientX));canvas.addEventListener('pointerup',()=>down=false);canvas.addEventListener('pointercancel',()=>down=false)}
-setupDrag($('previewCanvas'));
-
-function sizeCanvas(c){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);const w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}return {w,h,d}}
-function drawSolar(c,overlay=false){const {w,h,d}=sizeCanvas(c),ctx=c.getContext('2d');ctx.clearRect(0,0,w,h);if(!overlay){const g=ctx.createRadialGradient(w*.5,h*.42,0,w*.5,h*.42,Math.max(w,h)*.65);g.addColorStop(0,'#102b4f');g.addColorStop(1,'#020712');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
- const cx=w*.5,cy=h*(overlay?.52:.50),base=Math.min(w,h)*.46;ctx.save();ctx.translate(cx,cy);ctx.rotate(state.rotation*.12);
- PLANETS.forEach(p=>{ctx.beginPath();ctx.strokeStyle=overlay?'rgba(255,255,255,.40)':'rgba(160,180,210,.28)';ctx.lineWidth=Math.max(1,d);ctx.ellipse(0,0,base*p.orbit,base*p.orbit*.34,0,0,Math.PI*2);ctx.stroke()});
- const sunR=Math.max(11,base*.052);const sg=ctx.createRadialGradient(-sunR*.25,-sunR*.25,sunR*.05,0,0,sunR);sg.addColorStop(0,'#fff0a6');sg.addColorStop(.45,'#ffca43');sg.addColorStop(1,'#f69000');ctx.fillStyle=sg;ctx.shadowColor='#ffb21b';ctx.shadowBlur=sunR*.9;ctx.beginPath();ctx.arc(0,0,sunR,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
- const items=PLANETS.map((p,i)=>{const a=state.t/p.period*Math.PI*2+i*.69;const ox=Math.cos(a+state.rotation)*base*p.orbit,oz=Math.sin(a+state.rotation),oy=oz*base*p.orbit*.34;const z=(oz+1)/2,scale=.68+z*.7;return {p,i,x:ox,y:oy,z,scale}}).sort((a,b)=>a.z-b.z);
- items.forEach(o=>{const r=Math.max(3,o.p.size*d*.68*o.scale);ctx.fillStyle=o.p.color;ctx.beginPath();ctx.arc(o.x,o.y,r,0,Math.PI*2);ctx.fill();if(o.p.ring){ctx.strokeStyle='rgba(235,216,160,.9)';ctx.lineWidth=Math.max(2,d*1.2);ctx.beginPath();ctx.ellipse(o.x,o.y,r*1.75,r*.48,-.2,0,Math.PI*2);ctx.stroke()}if(state.labels){ctx.fillStyle='#fff';ctx.font=`${Math.max(10,11*d)}px system-ui`;ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=4*d;ctx.fillText(o.p.name,o.x,o.y-r-6*d);ctx.shadowBlur=0}});ctx.restore()}
-function frame(now){const dt=Math.min(.05,(now-state.last)/1000||0);state.last=now;if(!state.paused)state.t+=dt*state.speed;drawSolar($('previewCanvas'),false);drawSolar($('arCanvas'),true);requestAnimationFrame(frame)}requestAnimationFrame(frame);
-function resizeAll(){drawSolar($('previewCanvas'),false);drawSolar($('arCanvas'),true)}window.addEventListener('resize',resizeAll);
-
-async function startCamera(){const msg=$('cameraMsg'),status=$('arStatus');if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){msg.innerHTML='<strong>Kamera tidak tersedia pada konteks ini</strong><p>Browser/pratinjau ini tidak memberikan akses kamera. Simulasi planet tetap aktif di atas latar hitam.</p><button class="btn" id="retryCamera">Coba lagi</button>';setTimeout(()=>{const b=$('retryCamera');if(b)b.onclick=startCamera},0);toast('Akses kamera tidak tersedia di lingkungan ini.',true);return}
- try{status.textContent='Meminta izin kamera…';const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});state.cameraStream=stream;$('cameraVideo').srcObject=stream;await $('cameraVideo').play();msg.classList.add('hidden');status.textContent='Kamera aktif • Prototipe overlay AR berjalan';toast('Kamera aktif.');}
- catch(err){const reason=err&&err.name?err.name:'CameraError';status.textContent='Kamera gagal diaktifkan';msg.classList.remove('hidden');msg.innerHTML='<strong>Kamera belum dapat digunakan</strong><p>'+reason+'. Pastikan izin kamera diberikan dan halaman dibuka melalui HTTPS.</p><button class="btn primary" id="retryCamera">Coba lagi</button>';setTimeout(()=>{const b=$('retryCamera');if(b)b.onclick=startCamera},0);toast('Kamera gagal: '+reason,true)}}
-function stopCamera(){if(state.cameraStream){state.cameraStream.getTracks().forEach(t=>t.stop());state.cameraStream=null}$('cameraVideo').srcObject=null;$('cameraMsg').classList.remove('hidden')}
-$('startCamera').addEventListener('click',startCamera);
-if(location.hash==='#preview'){showView('previewView')}else{showView('homeView')};
-</script>
+<script src="data.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

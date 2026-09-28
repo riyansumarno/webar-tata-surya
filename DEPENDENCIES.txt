@@ -1,0 +1,8 @@
+DEPENDENSI MODE AR MARKER
+=========================
+Mode pratinjau 3D pada index.html tidak memerlukan library eksternal.
+Mode AR marker memuat library berikut melalui internet:
+- A-Frame 1.6.0: https://aframe.io/releases/1.6.0/aframe.min.js
+- AR.js marker/location build: https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js
+
+Library tersebut tidak disalin ke dalam ZIP ini. Hal ini menjaga paket lebih kecil dan memakai build resmi/terpublikasi.

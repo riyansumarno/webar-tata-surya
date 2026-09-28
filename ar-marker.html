@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050b14">
+<title>AR Marker Tata Surya</title>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.hud{position:fixed;z-index:99999;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.hud>*{pointer-events:auto}.group{display:flex;gap:7px;flex-wrap:wrap}.btn{border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(5,12,22,.82);backdrop-filter:blur(10px);color:#fff;padding:9px 12px;font-weight:700;text-decoration:none;cursor:pointer;font-size:13px}.status{position:fixed;z-index:99999;left:50%;top:58px;transform:translateX(-50%);max-width:90vw;background:rgba(5,12,22,.82);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;text-align:center;font-size:12px;pointer-events:none}.controls{position:fixed;z-index:99999;left:10px;right:10px;bottom:10px;padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(5,12,22,.82);color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.controls label{display:flex;gap:8px;align-items:center;font-size:13px}.controls input[type=range]{width:min(42vw,190px)}.hint{position:fixed;z-index:99998;left:50%;bottom:78px;transform:translateX(-50%);width:min(90vw,560px);background:rgba(5,12,22,.84);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:10px 13px;color:#dce6f5;font-size:12px;line-height:1.45;text-align:center}.hidden{display:none!important}a-scene{position:fixed!important;inset:0!important}
+</style>
+<script>
+window.AR_SOLAR={speed:1,paused:false};
+if(window.AFRAME){
+  AFRAME.registerComponent('solar-revolution',{
+    schema:{period:{type:'number',default:10},offset:{type:'number',default:0}},
+    init(){this.angle=this.data.offset},
+    tick(t,dt){if(window.AR_SOLAR.paused)return; this.angle += (dt/1000)*window.AR_SOLAR.speed*(360/this.data.period); this.el.object3D.rotation.y=THREE.MathUtils.degToRad(this.angle);}
+  });
+}
+window.addEventListener('load',()=>{
+  if(!window.AFRAME){ document.getElementById('status').textContent='A-Frame gagal dimuat. Pastikan internet aktif.'; return; }
+  const marker=document.querySelector('#solarMarker');
+  marker.addEventListener('markerFound',()=>{document.getElementById('status').textContent='Marker terdeteksi • Tata Surya aktif';document.getElementById('hint').classList.add('hidden')});
+  marker.addEventListener('markerLost',()=>{document.getElementById('status').textContent='Marker belum terlihat';document.getElementById('hint').classList.remove('hidden')});
+  const pause=document.getElementById('pauseBtn');
+  pause.onclick=()=>{window.AR_SOLAR.paused=!window.AR_SOLAR.paused;pause.textContent=window.AR_SOLAR.paused?'▶ Lanjutkan':'⏸ Jeda'};
+  const speed=document.getElementById('speed'); const st=document.getElementById('speedText');
+  speed.oninput=()=>{window.AR_SOLAR.speed=Number(speed.value);st.textContent=Number(speed.value).toFixed(1)+'×'};
+});
+</script>
+</head>
+<body>
+<div class="hud"><a class="btn" href="index.html">← Menu</a><div class="group"><a class="btn" href="index.html#preview">3D</a><a class="btn" href="marker.html" target="_blank">Marker</a></div></div>
+<div class="status" id="status">Izinkan kamera, lalu arahkan ke marker.</div>
+<div class="hint" id="hint">Buka <b>marker.html</b> di layar lain atau cetak markernya. Arahkan kamera hingga seluruh bingkai hitam terlihat.</div>
+<div class="controls"><button class="btn" id="pauseBtn">⏸ Jeda</button><label>Kecepatan <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1"><strong id="speedText">1.0×</strong></label></div>
+<a-scene embedded vr-mode-ui="enabled:false" renderer="antialias:true;alpha:true;precision:medium" arjs="sourceType:webcam;debugUIEnabled:false;detectionMode:mono;patternRatio:0.5;">
+  <a-marker id="solarMarker" type="pattern" url="assets/marker-giting-ar.patt" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
+    <a-entity id="solarSystem" scale="0.55 0.55 0.55" position="0 0.08 0">
+      <a-sphere radius="0.105" color="#ffb21b" material="roughness:.7;metalness:0" position="0 0.08 0"></a-sphere>
+      <a-ring radius-inner="0.205" radius-outer="0.208" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.285" radius-outer="0.288" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.365" radius-outer="0.368" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.45" radius-outer="0.453" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.57" radius-outer="0.573" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.70" radius-outer="0.703" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.83" radius-outer="0.833" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+      <a-ring radius-inner="0.96" radius-outer="0.963" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+
+      <a-entity solar-revolution="period:4.8;offset:8"><a-sphere position="0.205 0.08 0" radius="0.027" color="#a9a9a9"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:7;offset:52"><a-sphere position="0.285 0.08 0" radius="0.038" color="#d6aa72"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:9;offset:96"><a-sphere position="0.365 0.08 0" radius="0.041" color="#3385e6"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:11.5;offset:140"><a-sphere position="0.45 0.08 0" radius="0.032" color="#d05d3b"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:15;offset:184"><a-sphere position="0.57 0.08 0" radius="0.070" color="#c6a179"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:19;offset:228"><a-entity position="0.70 0.08 0"><a-sphere radius="0.060" color="#d8c48e"></a-sphere><a-ring radius-inner="0.082" radius-outer="0.112" rotation="75 0 0" color="#e4d7ad" material="side:double;opacity:.85;transparent:true"></a-ring></a-entity></a-entity>
+      <a-entity solar-revolution="period:23;offset:272"><a-sphere position="0.83 0.08 0" radius="0.050" color="#86d8e2"></a-sphere></a-entity>
+      <a-entity solar-revolution="period:28;offset:316"><a-sphere position="0.96 0.08 0" radius="0.049" color="#466dd4"></a-sphere></a-entity>
+    </a-entity>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
+</body>
+</html>

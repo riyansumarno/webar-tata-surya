@@ -1,15 +1,15 @@
-CHECKLIST UJI COBA
-==================
-[ ] start-localhost.bat membuka http://localhost:8000/
-[ ] Menu utama tampil tanpa error.
-[ ] Tombol Coba Pratinjau membuka animasi 8 planet.
-[ ] Tombol Jeda/Lanjutkan bekerja.
-[ ] Slider kecepatan mengubah revolusi.
-[ ] Checkbox Label bekerja.
-[ ] marker.html menampilkan marker dengan benar.
-[ ] ar-marker.html meminta izin kamera.
-[ ] Kamera aktif setelah izin diberikan.
-[ ] Marker terdeteksi ketika bingkai marker terlihat penuh.
-[ ] Tata Surya muncul di atas marker.
-[ ] Planet berevolusi dengan kecepatan berbeda.
-[ ] Tombol Jeda dan slider kecepatan pada mode AR bekerja.
+CHECKLIST WEBAR v3
+
+[ ] GitHub Pages memakai HTTPS
+[ ] camera-test.html dapat membuka kamera smartphone
+[ ] Kamera belakang standar dapat dipilih
+[ ] Tampilan kamera tidak ultrawide/terdistorsi
+[ ] ar-marker.html menampilkan tahap Siapkan Kamera
+[ ] Tombol Mulai AR aktif setelah izin kamera
+[ ] Feed kamera AR tampil
+[ ] marker.html dibuka pada layar lain / dicetak
+[ ] Seluruh bingkai hitam marker terlihat
+[ ] Status berubah menjadi "Marker terdeteksi"
+[ ] Tata Surya muncul di atas marker
+[ ] Jeda/Lanjut berfungsi
+[ ] Slider kecepatan berfungsi

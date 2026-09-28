@@ -1,34 +1,22 @@
-WEBAR TATA SURYA — PAKET LOCALHOST
-==================================
+WEBAR TATA SURYA — v3
 
-ISI UTAMA
-- index.html              : menu + pratinjau Tata Surya 3D.
-- ar-marker.html          : pengujian AR marker sebenarnya dengan AR.js.
-- marker.html             : marker yang dapat ditampilkan/cetak.
-- assets/marker-giting-ar.png
-- assets/marker-giting-ar.patt
-- server.py               : server localhost sederhana.
-- start-localhost.bat     : launcher Windows.
-- start-localhost.ps1     : launcher PowerShell.
-- start-localhost.sh      : launcher macOS/Linux.
-- TEST-CHECKLIST.txt      : daftar pengujian.
+Cara paling praktis (GitHub Pages / HTTPS):
+1. Buka index.html melalui alamat GitHub Pages.
+2. Di smartphone, pilih "Tes Kamera" lebih dulu jika ingin memastikan kamera browser normal.
+3. Buka "AR Marker".
+4. Tekan "Siapkan Kamera" dan izinkan akses kamera.
+5. Jika smartphone memiliki beberapa kamera, pilih kamera belakang dengan tampilan paling normal. Hindari ultrawide/0.5x jika marker sulit dibaca.
+6. Tekan "Mulai AR".
+7. Tampilkan marker.html pada layar perangkat lain atau cetak marker.
+8. Arahkan kamera smartphone ke marker hingga seluruh bingkai hitam terlihat.
 
-CARA TERCEPAT DI WINDOWS
-1. Ekstrak ZIP ke folder biasa.
-2. Klik dua kali start-localhost.bat.
-3. Browser akan membuka http://localhost:8000/
-4. Klik "Coba Pratinjau" untuk mengecek simulasi.
-5. Buka "Tampilkan Marker" pada layar/monitor lain atau cetak marker.
-6. Klik "Coba AR Marker", izinkan kamera, lalu arahkan kamera ke marker.
+Mode localhost:
+- Windows: klik start-localhost.bat lalu buka http://localhost:8000/
+- macOS/Linux: jalankan ./start-localhost.sh
 
-CATATAN PENTING
-- Jangan membuka ar-marker.html langsung dengan file://. Jalankan dari localhost.
-- Mode AR marker memakai A-Frame dan AR.js dari CDN. Internet diperlukan saat halaman AR pertama kali dimuat.
-- Chrome/Edge desktop biasanya dapat memakai kamera pada http://localhost karena localhost diperlakukan sebagai secure context.
-- Jika ingin mengetes dari ponsel terhadap server yang berjalan di PC, http://IP-PC:8000 belum tentu memperoleh izin kamera karena bukan HTTPS. Untuk ponsel, gunakan HTTPS/tunnel atau jalankan server pada perangkat yang sama.
-- Tutup server dengan Ctrl+C pada jendela terminal.
-
-TROUBLESHOOTING
-- Kamera hitam/tidak meminta izin: cek izin Camera pada browser dan Windows.
-- AR tidak muncul: pastikan internet aktif, marker tidak terpotong, seluruh bingkai hitam terlihat, dan pencahayaan cukup.
-- Port 8000 sudah dipakai: ubah PORT pada server.py, misalnya menjadi 8080.
+CATATAN
+- Kamera memerlukan HTTPS atau localhost.
+- A-Frame 1.6.0 dan AR.js 3.4.7 dimuat melalui internet.
+- Versi v3 sengaja memakai AR.js 3.4.7, bukan branch master, agar kompatibilitas tidak berubah tiba-tiba.
+- camera-test.html menguji kamera tanpa AR.js dan menyimpan pilihan kamera untuk digunakan pada halaman AR.
+- Jika kamera tampil normal tetapi marker tidak terbaca, masalahnya lebih mungkin pada marker, pencahayaan, jarak, atau tracking.

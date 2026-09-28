@@ -2,87 +2,127 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#050b14">
-<title>AR Marker Tata Surya — v3</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>AR Tata Surya — Mobile Fullscreen v4</title>
 <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-<script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/3.4.8/aframe/build/aframe-ar.js"></script>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02050a;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff}.hidden{display:none!important}.top{position:fixed;z-index:100000;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));display:flex;justify-content:space-between;gap:8px;pointer-events:none}.top>*{pointer-events:auto}.group{display:flex;gap:7px;flex-wrap:wrap}.btn{appearance:none;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(5,12,22,.88);backdrop-filter:blur(10px);color:#fff;padding:10px 13px;font-weight:750;text-decoration:none;cursor:pointer;font-size:13px}.btn.primary{background:#fff;color:#08111d;border-color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}.status{position:fixed;z-index:100000;left:50%;top:62px;transform:translateX(-50%);max-width:92vw;background:rgba(5,12,22,.88);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;text-align:center;font-size:12px;pointer-events:none}.controls{position:fixed;z-index:100000;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(5,12,22,.88);display:flex;gap:10px;align-items:center;flex-wrap:wrap}.controls label{display:flex;gap:8px;align-items:center;font-size:13px}.controls input[type=range]{width:min(40vw,180px)}.setup{position:fixed;inset:0;z-index:50000;background:radial-gradient(circle at 50% 10%,#14253f 0,#07101c 46%,#02050a 100%);overflow:auto;padding:88px 16px 110px}.panel{width:min(760px,100%);margin:0 auto;background:rgba(8,16,28,.92);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.35)}.panel h1{font-size:24px;margin:0 0 8px}.panel p{color:#c6d0df;line-height:1.55;margin:8px 0 14px}.steps{display:grid;gap:12px}.step{padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.035)}.step strong{display:block;margin-bottom:7px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.select{width:100%;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#091321;color:#fff;padding:11px 12px;font-size:14px}.previewWrap{position:relative;margin-top:10px;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/10;border:1px solid rgba(255,255,255,.12)}#cameraPreview{width:100%;height:100%;object-fit:cover;display:block}.previewBadge{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.65);padding:6px 8px;border-radius:8px;font-size:11px}.diag{margin-top:10px;padding:10px 12px;border-radius:12px;background:#07101c;border:1px solid rgba(255,255,255,.1);font-size:12px;color:#bdc9d9;white-space:pre-wrap;line-height:1.45}.error{border-color:#7a2d36;background:#211015;color:#ffd5da}.hint{position:fixed;z-index:99999;left:50%;bottom:82px;transform:translateX(-50%);width:min(92vw,620px);background:rgba(5,12,22,.88);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:10px 13px;color:#dce6f5;font-size:12px;line-height:1.45;text-align:center}.sceneHost{position:fixed;inset:0;z-index:1}.sceneHost a-scene{position:fixed!important;inset:0!important}.cameraError{position:fixed;z-index:99999;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,560px);background:#140b0d;border:1px solid #6e3138;border-radius:18px;padding:16px;color:#ffe4e7;line-height:1.5}.small{font-size:12px;color:#9fb0c4}.badge{display:inline-flex;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px 8px;font-size:11px;color:#c9d4e3}.spacer{flex:1}
+:root{color-scheme:dark;--vh:100dvh}*{box-sizing:border-box}
+html,body{margin:0!important;padding:0!important;width:100%!important;height:100%!important;min-height:100%!important;overflow:hidden!important;background:#000!important;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;overscroll-behavior:none;touch-action:manipulation}
+#stage,.sceneHost,a-scene,.a-canvas,canvas{position:fixed!important;inset:0!important;width:100vw!important;height:var(--vh)!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important}
+#stage,.sceneHost{z-index:1;background:#000}
+a-scene{z-index:2!important;background:transparent!important}
+.a-canvas,canvas{z-index:3!important;background:transparent!important;display:block!important}
+/* AR.js creates its webcam video dynamically. Keep it as the real fullscreen background. */
+video,video#arjs-video,.arjs-video{position:fixed!important;inset:0!important;left:0!important;top:0!important;width:100vw!important;height:var(--vh)!important;min-width:100vw!important;min-height:var(--vh)!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center center!important;transform:none!important;margin:0!important;padding:0!important;border:0!important;z-index:1!important;background:#000!important;display:block!important;visibility:visible!important;opacity:1!important}
+.hidden{display:none!important}
+.startScreen{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 18%,#163356 0,#091421 43%,#02050a 100%)}
+.card{width:min(560px,100%);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:22px;background:rgba(7,15,25,.93);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+h1{font-size:26px;line-height:1.15;margin:0 0 10px}.card p{margin:0 0 16px;line-height:1.55;color:#c7d2e1;font-size:14px}.row{display:flex;gap:9px;flex-wrap:wrap}.btn{appearance:none;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(7,15,25,.88);color:#fff;padding:11px 14px;font-weight:750;font-size:14px;text-decoration:none;cursor:pointer}.btn.primary{background:#fff;color:#07101a;border-color:#fff}.btn:disabled{opacity:.5}.small{font-size:12px!important;color:#94a7bf!important;margin-top:13px!important}.diag{margin-top:13px;border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:10px 12px;background:#050b12;color:#cbd7e6;font-size:12px;line-height:1.45;white-space:pre-wrap}.diag.error{border-color:#7a343d;background:#1b0d10;color:#ffd6db}
+.topbar{position:fixed;z-index:1100;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));display:flex;justify-content:space-between;gap:8px;pointer-events:none}.topbar>*{pointer-events:auto}.group{display:flex;gap:7px;flex-wrap:wrap}.status{position:fixed;z-index:1090;left:50%;top:max(62px,calc(env(safe-area-inset-top) + 56px));transform:translateX(-50%);max-width:92vw;padding:8px 12px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(4,10,17,.78);backdrop-filter:blur(8px);font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.guide{position:fixed;z-index:1080;left:50%;top:50%;transform:translate(-50%,-50%);width:min(66vw,320px);aspect-ratio:1;border:2px dashed rgba(255,255,255,.8);border-radius:18px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,.08)}.guide:after{content:"Arahkan marker di dalam area ini";position:absolute;left:50%;bottom:-34px;transform:translateX(-50%);width:240px;text-align:center;font-size:12px;text-shadow:0 1px 4px #000}
+.controls{position:fixed;z-index:1100;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(4,10,17,.76);backdrop-filter:blur(9px)}.controls label{display:flex;align-items:center;gap:7px;font-size:12px}.controls input{width:min(34vw,150px)}.spacer{flex:1}
+.problem{position:fixed;z-index:1200;left:50%;top:50%;transform:translate(-50%,-50%);width:min(90vw,520px);padding:18px;border:1px solid #73323a;border-radius:18px;background:rgba(25,10,13,.96);color:#ffe3e6;line-height:1.5;font-size:14px}.problem .row{margin-top:12px}
+@media (orientation:landscape){.guide{width:min(43vh,280px)}.status{top:max(10px,env(safe-area-inset-top));max-width:46vw}.controls{left:auto;width:min(540px,70vw)}}
 </style>
 <script>
 window.AR_SOLAR={speed:1,paused:false};
-const nativeGUM = navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices) : null;
-let previewStream=null, selectedDeviceId='', selectedLabel='', arStarted=false;
 const $=id=>document.getElementById(id);
+let started=false,videoSeen=false,watchdog=null;
+function setVh(){document.documentElement.style.setProperty('--vh',`${window.innerHeight}px`)}
+setVh(); addEventListener('resize',setVh); addEventListener('orientationchange',()=>setTimeout(setVh,250));
+function out(msg,err=false){const el=$('diag'); if(!el)return; el.textContent=msg;el.classList.toggle('error',err)}
 function status(msg){const el=$('status');if(el)el.textContent=msg}
-function diag(msg,isError=false){const el=$('diag');if(!el)return;el.textContent=msg;el.classList.toggle('error',isError)}
-function cameraScore(label){label=(label||'').toLowerCase();let s=0;if(/back|rear|environment|belakang|traseira|trasera|arriere/.test(label))s+=100;if(/front|user|selfie|depan/.test(label))s-=140;if(/ultra|wide|0\.5|0,5|tele|zoom/.test(label))s-=35;if(/main|standard|utama|camera 0|kamera 0/.test(label))s+=20;return s}
-async function stopPreview(){if(previewStream){previewStream.getTracks().forEach(t=>t.stop());previewStream=null}const v=$('cameraPreview');if(v)v.srcObject=null}
-async function requestPermission(){if(!nativeGUM)throw new Error('Browser ini tidak menyediakan MediaDevices.getUserMedia.');const s=await nativeGUM({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});s.getTracks().forEach(t=>t.stop())}
-async function enumerateCameras(){const devices=await navigator.mediaDevices.enumerateDevices();return devices.filter(d=>d.kind==='videoinput')}
-async function showPreview(deviceId){await stopPreview();const constraints={video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:30}},audio:false};if(deviceId)constraints.video.deviceId={exact:deviceId};else constraints.video.facingMode={ideal:'environment'};previewStream=await nativeGUM(constraints);$('cameraPreview').srcObject=previewStream;await $('cameraPreview').play().catch(()=>{});const tr=previewStream.getVideoTracks()[0];const st=tr.getSettings?tr.getSettings():{};$('previewBadge').textContent=`${st.width||'?'}×${st.height||'?'} • ${tr.label||'kamera'}`;selectedDeviceId=st.deviceId||deviceId||'';selectedLabel=tr.label||'';localStorage.setItem('webar.cameraDeviceId',selectedDeviceId);localStorage.setItem('webar.cameraLabel',selectedLabel)}
-async function prepareCamera(){const btn=$('prepareBtn');btn.disabled=true;diag('Meminta izin kamera…');try{if(!window.isSecureContext)throw new Error('Halaman bukan secure context. Gunakan HTTPS atau localhost.');await requestPermission();const cams=await enumerateCameras();if(!cams.length)throw new Error('Tidak ada kamera yang terdeteksi.');const saved=localStorage.getItem('webar.cameraDeviceId')||'';const sorted=[...cams].sort((a,b)=>cameraScore(b.label)-cameraScore(a.label));let chosen=sorted.find(c=>c.deviceId===saved)||sorted[0];const sel=$('cameraSelect');sel.innerHTML='';sorted.forEach((c,i)=>{const o=document.createElement('option');o.value=c.deviceId;o.textContent=c.label||`Kamera ${i+1}`;sel.appendChild(o)});sel.value=chosen.deviceId;await showPreview(chosen.deviceId);sel.disabled=false;$('startBtn').disabled=false;diag(`Izin kamera aktif. ${cams.length} kamera ditemukan. Pilih tampilan kamera belakang yang paling normal, lalu tekan “Mulai AR”.`);btn.textContent='✓ Kamera siap'}catch(e){diag(`Kamera gagal disiapkan:\n${e.name||'Error'}: ${e.message||e}`,true);btn.disabled=false;btn.textContent='Coba Lagi'} }
-async function onCameraChange(){try{diag('Mengganti kamera…');await showPreview($('cameraSelect').value);diag('Pratinjau kamera diperbarui. Jika ini kamera belakang standar, lanjutkan ke AR.')}catch(e){diag(`Tidak dapat memakai kamera tersebut:\n${e.name||'Error'}: ${e.message||e}`,true)}}
-function patchGetUserMedia(){if(!nativeGUM)return;try{navigator.mediaDevices.getUserMedia=async function(constraints){const c={video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:30}},audio:false};if(selectedDeviceId)c.video.deviceId={exact:selectedDeviceId};else c.video.facingMode={ideal:'environment'};try{return await nativeGUM(c)}catch(err){return await nativeGUM({video:{facingMode:{ideal:'environment'}},audio:false})}}}catch(e){console.warn('Tidak dapat patch getUserMedia',e)}}
-function registerComponents(){if(!window.AFRAME)return false;if(!AFRAME.components['solar-revolution'])AFRAME.registerComponent('solar-revolution',{schema:{period:{type:'number',default:10},offset:{type:'number',default:0}},init(){this.angle=this.data.offset},tick(t,dt){if(window.AR_SOLAR.paused)return;this.angle+=(dt/1000)*window.AR_SOLAR.speed*(360/this.data.period);this.el.object3D.rotation.y=THREE.MathUtils.degToRad(this.angle)}});return true}
+function registerSolar(){
+ if(!window.AFRAME||AFRAME.components['solar-revolution'])return;
+ AFRAME.registerComponent('solar-revolution',{schema:{period:{type:'number',default:10},offset:{type:'number',default:0}},init(){this.angle=this.data.offset},tick(t,dt){if(window.AR_SOLAR.paused)return;this.angle+=(dt/1000)*window.AR_SOLAR.speed*(360/this.data.period);this.el.object3D.rotation.y=THREE.MathUtils.degToRad(this.angle)}});
+}
 function solarMarkup(){return `
-<a-scene id="arScene" embedded vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" renderer="antialias:true;alpha:true;precision:medium" arjs="sourceType:webcam;videoTexture:true;debugUIEnabled:false;detectionMode:mono;patternRatio:0.5;maxDetectionRate:30;sourceWidth:1280;sourceHeight:720;displayWidth:1280;displayHeight:720;">
+<a-scene id="arScene" embedded vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false" renderer="alpha:true;antialias:true;precision:medium" arjs="sourceType:webcam;debugUIEnabled:false;detectionMode:mono;maxDetectionRate:30;patternRatio:0.5;">
  <a-marker id="solarMarker" type="pattern" url="assets/marker-giting-ar.patt" smooth="true" smoothCount="8" smoothTolerance="0.02" smoothThreshold="3">
-  <a-entity id="solarSystem" scale="0.55 0.55 0.55" position="0 0.08 0">
-   <a-sphere radius="0.105" color="#ffb21b" material="roughness:.7;metalness:0" position="0 0.08 0"></a-sphere>
-   <a-ring radius-inner="0.205" radius-outer="0.208" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.285" radius-outer="0.288" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.365" radius-outer="0.368" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.45" radius-outer="0.453" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.57" radius-outer="0.573" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.70" radius-outer="0.703" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.83" radius-outer="0.833" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
-   <a-ring radius-inner="0.96" radius-outer="0.963" rotation="-90 0 0" color="#aab6c6" material="opacity:.55;transparent:true"></a-ring>
+  <a-entity scale="0.56 0.56 0.56" position="0 0.08 0">
+   <a-sphere radius="0.105" color="#ffb21b" position="0 0.08 0"></a-sphere>
+   <a-ring radius-inner="0.205" radius-outer="0.208" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.285" radius-outer="0.288" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.365" radius-outer="0.368" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.450" radius-outer="0.453" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.570" radius-outer="0.573" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.700" radius-outer="0.703" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.830" radius-outer="0.833" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
+   <a-ring radius-inner="0.960" radius-outer="0.963" rotation="-90 0 0" color="#b7c2cf" material="opacity:.55;transparent:true"></a-ring>
    <a-entity solar-revolution="period:4.8;offset:8"><a-sphere position="0.205 0.08 0" radius="0.027" color="#a9a9a9"></a-sphere></a-entity>
    <a-entity solar-revolution="period:7;offset:52"><a-sphere position="0.285 0.08 0" radius="0.038" color="#d6aa72"></a-sphere></a-entity>
    <a-entity solar-revolution="period:9;offset:96"><a-sphere position="0.365 0.08 0" radius="0.041" color="#3385e6"></a-sphere></a-entity>
-   <a-entity solar-revolution="period:11.5;offset:140"><a-sphere position="0.45 0.08 0" radius="0.032" color="#d05d3b"></a-sphere></a-entity>
-   <a-entity solar-revolution="period:15;offset:184"><a-sphere position="0.57 0.08 0" radius="0.070" color="#c6a179"></a-sphere></a-entity>
-   <a-entity solar-revolution="period:19;offset:228"><a-entity position="0.70 0.08 0"><a-sphere radius="0.060" color="#d8c48e"></a-sphere><a-ring radius-inner="0.082" radius-outer="0.112" rotation="75 0 0" color="#e4d7ad" material="side:double;opacity:.85;transparent:true"></a-ring></a-entity></a-entity>
-   <a-entity solar-revolution="period:23;offset:272"><a-sphere position="0.83 0.08 0" radius="0.050" color="#86d8e2"></a-sphere></a-entity>
-   <a-entity solar-revolution="period:28;offset:316"><a-sphere position="0.96 0.08 0" radius="0.049" color="#466dd4"></a-sphere></a-entity>
+   <a-entity solar-revolution="period:11.5;offset:140"><a-sphere position="0.450 0.08 0" radius="0.032" color="#d05d3b"></a-sphere></a-entity>
+   <a-entity solar-revolution="period:15;offset:184"><a-sphere position="0.570 0.08 0" radius="0.070" color="#c6a179"></a-sphere></a-entity>
+   <a-entity solar-revolution="period:19;offset:228"><a-entity position="0.700 0.08 0"><a-sphere radius="0.060" color="#d8c48e"></a-sphere><a-ring radius-inner="0.082" radius-outer="0.112" rotation="75 0 0" color="#e4d7ad" material="side:double;opacity:.85;transparent:true"></a-ring></a-entity></a-entity>
+   <a-entity solar-revolution="period:23;offset:272"><a-sphere position="0.830 0.08 0" radius="0.050" color="#86d8e2"></a-sphere></a-entity>
+   <a-entity solar-revolution="period:28;offset:316"><a-sphere position="0.960 0.08 0" radius="0.049" color="#466dd4"></a-sphere></a-entity>
   </a-entity>
  </a-marker>
  <a-entity camera></a-entity>
 </a-scene>`}
-async function startAR(){if(arStarted)return;const btn=$('startBtn');btn.disabled=true;diag('Menyiapkan mode AR…');try{if(!window.AFRAME||!window.THREE)throw new Error('A-Frame belum berhasil dimuat. Periksa koneksi internet.');if(!window.ARjs&&!document.querySelector('script[src*="AR.js"]'))throw new Error('AR.js belum berhasil dimuat.');await stopPreview();patchGetUserMedia();registerComponents();$('setup').classList.add('hidden');$('sceneHost').innerHTML=solarMarkup();$('arUI').classList.remove('hidden');$('hint').classList.remove('hidden');arStarted=true;status('Menyalakan kamera AR…');setTimeout(bindSceneEvents,50)}catch(e){diag(`AR gagal dimulai:\n${e.name||'Error'}: ${e.message||e}`,true);btn.disabled=false}}
-function bindSceneEvents(){const scene=$('arScene');const marker=$('solarMarker');if(!scene||!marker){setTimeout(bindSceneEvents,80);return}scene.addEventListener('loaded',()=>status('AR siap • arahkan kamera ke marker'));marker.addEventListener('markerFound',()=>{status('Marker terdeteksi • Tata Surya aktif');$('hint').classList.add('hidden')});marker.addEventListener('markerLost',()=>{status('Marker belum terlihat');$('hint').classList.remove('hidden')});setTimeout(()=>{const video=document.querySelector('video');if(!video)showCameraError('Feed kamera AR belum muncul. Tekan “Ganti kamera”, lalu pilih kamera lain atau jalankan Tes Kamera.')},7000)}
-function showCameraError(msg){const el=$('cameraError');el.textContent=msg;el.classList.remove('hidden')}
-function reloadCamera(){location.reload()}
-window.addEventListener('DOMContentLoaded',()=>{
- $('prepareBtn').addEventListener('click',prepareCamera);$('cameraSelect').addEventListener('change',onCameraChange);$('startBtn').addEventListener('click',startAR);$('reloadBtn').addEventListener('click',reloadCamera);
- $('pauseBtn').addEventListener('click',e=>{window.AR_SOLAR.paused=!window.AR_SOLAR.paused;e.currentTarget.textContent=window.AR_SOLAR.paused?'▶ Lanjutkan':'⏸ Jeda'});$('speed').addEventListener('input',e=>{window.AR_SOLAR.speed=Number(e.target.value);$('speedText').textContent=Number(e.target.value).toFixed(1)+'×'});
- if(!window.isSecureContext)diag('Peringatan: akses kamera memerlukan HTTPS atau localhost.',true);
+function enforceFullscreen(){
+ const v=document.querySelector('video'); const c=document.querySelector('.a-canvas,canvas'); const scene=$('arScene');
+ [v,c,scene].forEach(el=>{if(!el)return;el.style.setProperty('position','fixed','important');el.style.setProperty('inset','0','important');el.style.setProperty('width','100vw','important');el.style.setProperty('height',`${window.innerHeight}px`,'important');el.style.setProperty('margin','0','important')});
+ if(v){videoSeen=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');v.muted=true;v.autoplay=true;v.style.setProperty('object-fit','cover','important');v.style.setProperty('z-index','1','important');if(v.paused)v.play().catch(()=>{}); const stream=v.srcObject;if(stream){const tr=stream.getVideoTracks?.()[0];if(tr&&!tr.__watched){tr.__watched=true;tr.addEventListener('ended',()=>showProblem('Stream kamera berhenti. Tekan “Mulai ulang kamera”.'))}}}
+ if(c){c.style.setProperty('z-index','3','important');c.style.setProperty('background','transparent','important')}
+ if(scene&&scene.renderer)scene.renderer.setClearColor(0x000000,0);
+}
+function showProblem(msg){const p=$('problem');$('problemText').textContent=msg;p.classList.remove('hidden')}
+function hideProblem(){$('problem').classList.add('hidden')}
+function bindEvents(){
+ const scene=$('arScene'),marker=$('solarMarker'); if(!scene||!marker){setTimeout(bindEvents,80);return}
+ scene.addEventListener('loaded',()=>{status('Kamera aktif • arahkan ke marker');enforceFullscreen()});
+ scene.addEventListener('render-target-loaded',()=>{enforceFullscreen(); if(scene.renderer)scene.renderer.setClearColor(0x000000,0)});
+ marker.addEventListener('markerFound',()=>{status('Marker terdeteksi • Tata Surya aktif');$('guide').classList.add('hidden')});
+ marker.addEventListener('markerLost',()=>{status('Cari marker…');$('guide').classList.remove('hidden')});
+}
+async function startAR(){
+ if(started)return; const btn=$('startBtn');btn.disabled=true;out('Menyalakan kamera AR…');
+ try{
+  if(!window.isSecureContext)throw new Error('Akses kamera memerlukan HTTPS atau localhost.');
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Browser tidak menyediakan getUserMedia.');
+  if(!window.AFRAME||!window.THREE)throw new Error('A-Frame gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.');
+  registerSolar();
+  // One short permission probe only; immediately release it before AR.js owns the camera.
+  const probe=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}); probe.getTracks().forEach(t=>t.stop());
+  $('startScreen').classList.add('hidden');$('arUI').classList.remove('hidden');$('stage').innerHTML=solarMarkup();started=true;bindEvents();
+  const obs=new MutationObserver(enforceFullscreen);obs.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+  watchdog=setInterval(()=>{enforceFullscreen();const v=document.querySelector('video');if(started&&!v&&videoSeen)showProblem('Elemen kamera hilang dari halaman. Tekan “Mulai ulang kamera”.')},1000);
+  setTimeout(()=>{const v=document.querySelector('video');if(!v)showProblem('Kamera belum muncul. Pastikan izin kamera diberikan, lalu tekan “Mulai ulang kamera”.')},7000);
+ }catch(e){out(`${e.name||'Error'}: ${e.message||e}`,true);btn.disabled=false}
+}
+function restart(){location.reload()}
+async function fullScreen(){try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else if(document.documentElement.webkitRequestFullscreen)await document.documentElement.webkitRequestFullscreen();setTimeout(enforceFullscreen,100)}catch(e){status('Mode layar penuh tidak didukung browser ini')};}
+addEventListener('DOMContentLoaded',()=>{
+ $('startBtn').onclick=startAR;$('restartBtn').onclick=restart;$('problemRestart').onclick=restart;$('dismissProblem').onclick=hideProblem;$('fullBtn').onclick=fullScreen;
+ $('pauseBtn').onclick=e=>{window.AR_SOLAR.paused=!window.AR_SOLAR.paused;e.currentTarget.textContent=window.AR_SOLAR.paused?'▶ Lanjut':'⏸ Jeda'};
+ $('speed').oninput=e=>{window.AR_SOLAR.speed=Number(e.target.value);$('speedText').textContent=Number(e.target.value).toFixed(1)+'×'};
+ if(!window.isSecureContext)out('Halaman ini harus dibuka melalui HTTPS atau localhost.',true);
 });
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(enforceFullscreen,150)});
+addEventListener('pagehide',()=>{if(watchdog)clearInterval(watchdog);document.querySelectorAll('video').forEach(v=>v.srcObject?.getTracks?.().forEach(t=>t.stop()))});
 </script>
 </head>
 <body>
-<div class="top"><a class="btn" href="index.html">← Menu</a><div class="group"><a class="btn" href="marker.html" target="_blank">Marker</a><a class="btn" href="camera-test.html">Tes Kamera</a></div></div>
-<div id="setup" class="setup">
- <div class="panel">
-  <span class="badge">WebAR v3 • camera-safe mode</span>
-  <h1>Siapkan kamera sebelum AR</h1>
-  <p>Versi ini tidak langsung menyalakan AR. Browser diminta membuka kamera terlebih dahulu agar kamera belakang yang benar dapat dipilih, terutama pada smartphone dengan beberapa lensa.</p>
-  <div class="steps">
-   <div class="step"><strong>1. Izinkan kamera</strong><div class="row"><button id="prepareBtn" class="btn primary">Siapkan Kamera</button><span class="small">Gunakan Chrome Android atau Safari iPhone terbaru.</span></div></div>
-   <div class="step"><strong>2. Pilih kamera</strong><select id="cameraSelect" class="select" disabled><option>Izinkan kamera terlebih dahulu</option></select><div class="previewWrap"><video id="cameraPreview" playsinline muted autoplay></video><div id="previewBadge" class="previewBadge">Pratinjau belum aktif</div></div><p class="small">Jika tersedia beberapa kamera belakang, pilih yang tampilannya paling normal. Hindari ultrawide/0.5× jika marker sulit terbaca.</p></div>
-   <div class="step"><strong>3. Mulai AR</strong><div class="row"><button id="startBtn" class="btn primary" disabled>Mulai AR</button><a class="btn" href="marker.html" target="_blank">Buka Marker</a><a class="btn" href="camera-test.html">Tes Kamera Terpisah</a></div></div>
-  </div>
-  <div id="diag" class="diag">Tekan “Siapkan Kamera”.</div>
+<div id="stage" class="sceneHost"></div>
+<div id="startScreen" class="startScreen">
+ <div class="card">
+  <h1>AR Tata Surya</h1>
+  <p>Versi ini memakai <b>satu stream kamera</b> untuk AR. Tidak ada lagi pratinjau kecil yang kemudian dimatikan saat AR mulai.</p>
+  <div class="row"><button id="startBtn" class="btn primary">Mulai AR & Kamera</button><a class="btn" href="marker.html" target="_blank">Lihat Marker</a><a class="btn" href="camera-test.html">Tes Kamera</a></div>
+  <p class="small">Untuk pengujian: tampilkan marker pada perangkat lain atau cetak marker. Gunakan Chrome Android atau Safari iPhone.</p>
+  <div id="diag" class="diag">Tekan “Mulai AR & Kamera”, lalu izinkan kamera.</div>
  </div>
 </div>
-<div id="sceneHost" class="sceneHost"></div>
 <div id="arUI" class="hidden">
- <div class="status" id="status">Menyiapkan AR…</div>
- <div class="hint" id="hint">Tampilkan <b>marker</b> pada layar lain atau cetak. Pastikan seluruh bingkai hitam terlihat, pencahayaan merata, dan kamera tidak terlalu dekat.</div>
- <div class="controls"><button class="btn" id="pauseBtn">⏸ Jeda</button><label>Kecepatan <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1"><strong id="speedText">1.0×</strong></label><span class="spacer"></span><button class="btn" id="reloadBtn">↻ Ganti kamera</button></div>
+ <div class="topbar"><div class="group"><a class="btn" href="index.html">← Menu</a><a class="btn" href="marker.html" target="_blank">Marker</a></div><div class="group"><button id="fullBtn" class="btn">⛶ Layar penuh</button></div></div>
+ <div id="status" class="status">Menyalakan kamera…</div>
+ <div id="guide" class="guide"></div>
+ <div class="controls"><button id="pauseBtn" class="btn">⏸ Jeda</button><label>Kecepatan <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1"><strong id="speedText">1.0×</strong></label><span class="spacer"></span><button id="restartBtn" class="btn">↻ Mulai ulang kamera</button></div>
 </div>
-<div id="cameraError" class="cameraError hidden"></div>
+<div id="problem" class="problem hidden"><div id="problemText">Kamera berhenti.</div><div class="row"><button id="problemRestart" class="btn primary">Mulai ulang kamera</button><button id="dismissProblem" class="btn">Tutup pesan</button></div></div>
 </body>
 </html>

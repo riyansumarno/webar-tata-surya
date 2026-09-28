@@ -1,22 +1,30 @@
-WEBAR TATA SURYA — v3
+WEBAR TATA SURYA — v4 MOBILE FULLSCREEN
 
-Cara paling praktis (GitHub Pages / HTTPS):
-1. Buka index.html melalui alamat GitHub Pages.
-2. Di smartphone, pilih "Tes Kamera" lebih dulu jika ingin memastikan kamera browser normal.
-3. Buka "AR Marker".
-4. Tekan "Siapkan Kamera" dan izinkan akses kamera.
-5. Jika smartphone memiliki beberapa kamera, pilih kamera belakang dengan tampilan paling normal. Hindari ultrawide/0.5x jika marker sulit dibaca.
-6. Tekan "Mulai AR".
-7. Tampilkan marker.html pada layar perangkat lain atau cetak marker.
-8. Arahkan kamera smartphone ke marker hingga seluruh bingkai hitam terlihat.
+Perubahan utama v4:
+1. Mode AR hanya memakai satu stream kamera. Preview kamera terpisah pada halaman AR dihapus.
+2. Video kamera dan canvas AR dipaksa memenuhi 100vw x tinggi viewport aktual smartphone.
+3. Background kamera memakai elemen <video> asli, bukan videoTexture WebGL, untuk kompatibilitas mobile yang lebih baik.
+4. AR.js dipatok ke versi 3.4.8 dan A-Frame 1.6.0.
+5. Ada watchdog: bila stream/elemen kamera berhenti, pengguna mendapat pesan dan tombol mulai ulang.
+6. camera-test.html juga dibuat fullscreen untuk memisahkan masalah kamera browser dari masalah AR.js.
 
-Mode localhost:
-- Windows: klik start-localhost.bat lalu buka http://localhost:8000/
-- macOS/Linux: jalankan ./start-localhost.sh
+GITHUB PAGES
+Unggah/replace seluruh isi folder ini ke root repository webar-tata-surya.
+Kemudian buka:
+- index.html            halaman utama
+- camera-test.html      tes kamera fullscreen tanpa AR.js
+- ar-marker.html        AR marker Tata Surya
+- marker.html           marker yang harus dipindai
+
+URUTAN TES YANG DISARANKAN
+A. Buka camera-test.html dari smartphone.
+   - Kamera harus memenuhi seluruh layar.
+   - Diamkan 30-60 detik. Kamera seharusnya tidak hilang/menjadi hitam.
+B. Bila A berhasil, buka ar-marker.html.
+   - Tekan Mulai AR & Kamera.
+   - Izinkan kamera.
+   - Tampilkan marker di perangkat lain atau cetak.
+   - Arahkan seluruh marker ke area panduan di tengah layar.
 
 CATATAN
-- Kamera memerlukan HTTPS atau localhost.
-- A-Frame 1.6.0 dan AR.js 3.4.7 dimuat melalui internet.
-- Versi v3 sengaja memakai AR.js 3.4.7, bukan branch master, agar kompatibilitas tidak berubah tiba-tiba.
-- camera-test.html menguji kamera tanpa AR.js dan menyimpan pilihan kamera untuk digunakan pada halaman AR.
-- Jika kamera tampil normal tetapi marker tidak terbaca, masalahnya lebih mungkin pada marker, pencahayaan, jarak, atau tracking.
+A-Frame dan AR.js masih dimuat dari URL HTTPS versi tetap. Koneksi internet diperlukan saat halaman AR pertama kali dimuat, kecuali library tersebut sudah tersimpan di cache browser.

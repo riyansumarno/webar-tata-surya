@@ -1,15 +1,12 @@
-CHECKLIST WEBAR v3
-
-[ ] GitHub Pages memakai HTTPS
-[ ] camera-test.html dapat membuka kamera smartphone
-[ ] Kamera belakang standar dapat dipilih
-[ ] Tampilan kamera tidak ultrawide/terdistorsi
-[ ] ar-marker.html menampilkan tahap Siapkan Kamera
-[ ] Tombol Mulai AR aktif setelah izin kamera
-[ ] Feed kamera AR tampil
-[ ] marker.html dibuka pada layar lain / dicetak
-[ ] Seluruh bingkai hitam marker terlihat
-[ ] Status berubah menjadi "Marker terdeteksi"
-[ ] Tata Surya muncul di atas marker
-[ ] Jeda/Lanjut berfungsi
-[ ] Slider kecepatan berfungsi
+CHECKLIST v4
+[ ] GitHub Pages dibuka melalui HTTPS.
+[ ] camera-test.html: izin kamera muncul.
+[ ] camera-test.html: feed kamera memenuhi seluruh viewport smartphone.
+[ ] camera-test.html: feed tetap aktif minimal 60 detik.
+[ ] ar-marker.html: tekan Mulai AR & Kamera.
+[ ] ar-marker.html: kamera memenuhi seluruh viewport, tidak kecil di bawah.
+[ ] ar-marker.html: kamera tetap aktif, tidak berubah menjadi layar hitam.
+[ ] marker.html dibuka pada perangkat lain / marker dicetak.
+[ ] Marker terdeteksi dan Tata Surya muncul.
+[ ] Jeda dan slider kecepatan bekerja.
+[ ] Rotasi layar portrait/landscape tidak mengecilkan feed kamera.

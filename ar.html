@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#02050a">
+<meta name="description" content="AR markerless Tata Surya: tempatkan model 3D di ruang nyata dengan WebXR, atau gunakan mode kamera kompatibilitas tanpa marker.">
+<title>AR Ruang — Tata Surya Interaktif</title>
+<style>
+:root{color-scheme:dark;--bg:#02050a;--panel:rgba(5,12,22,.88);--line:rgba(255,255,255,.14);--text:#f7fbff;--muted:#a9b6c8;--blue:#78a9ff;--cyan:#75e9ff;--green:#7de0b5;--yellow:#ffd86b;--danger:#ff8e98}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);overscroll-behavior:none}button,a{font:inherit}.hidden{display:none!important}
+#xrCanvas,#fallbackCanvas,#cameraVideo{position:fixed;inset:0;width:100vw;height:100dvh;display:block}#cameraVideo{object-fit:cover;background:#000;z-index:1}#fallbackCanvas{z-index:2;touch-action:none}#xrCanvas{z-index:2;touch-action:none}
+#landing{position:fixed;inset:0;z-index:30;overflow:auto;background:radial-gradient(circle at 50% 18%,#173154 0,#081321 42%,#02050a 100%);padding:max(22px,env(safe-area-inset-top)) 18px max(24px,env(safe-area-inset-bottom))}
+.wrap{width:min(720px,100%);margin:0 auto}.brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}.brand-orb{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7b7,#ffbd3e 35%,#f27921 70%,#7a2813);box-shadow:0 0 32px rgba(255,180,63,.35)}.brand b{display:block;letter-spacing:.08em;font-size:.74rem}.brand small{display:block;color:var(--muted);margin-top:2px}
+.hero{padding:10px 0 18px}.pill{display:inline-flex;padding:7px 10px;border:1px solid rgba(117,233,255,.28);border-radius:999px;background:rgba(117,233,255,.07);color:var(--cyan);font-size:.7rem;font-weight:900;letter-spacing:.12em}.hero h1{font-size:clamp(2rem,8vw,4rem);line-height:.98;letter-spacing:-.055em;margin:16px 0 13px}.hero h1 span{color:#9ec0ff}.hero p{margin:0;color:#c1ccda;line-height:1.65;font-size:.98rem;max-width:620px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.mode{position:relative;text-align:left;border:1px solid var(--line);border-radius:22px;padding:19px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));color:var(--text);cursor:pointer;min-height:210px;transition:.18s}.mode:active{transform:scale(.985)}.mode.recommended{border-color:rgba(117,233,255,.32);background:linear-gradient(180deg,rgba(90,152,255,.12),rgba(255,255,255,.025))}.mode .icon{font-size:2rem}.mode small{display:block;margin-top:18px;color:var(--cyan);font-size:.68rem;letter-spacing:.1em;font-weight:900}.mode h2{font-size:1.25rem;margin:6px 0 8px}.mode p{margin:0;color:var(--muted);line-height:1.55;font-size:.84rem}.mode .support{position:absolute;right:14px;top:14px;padding:5px 8px;border-radius:999px;font-size:.63rem;font-weight:900;border:1px solid var(--line);background:rgba(0,0,0,.18)}.support.ok{color:var(--green);border-color:rgba(125,224,181,.25)}.support.no{color:#ffb4ba;border-color:rgba(255,142,152,.25)}.support.check{color:var(--yellow)}
+.note{margin-top:13px;border:1px solid var(--line);border-radius:17px;padding:14px 15px;background:rgba(255,255,255,.035);color:var(--muted);font-size:.82rem;line-height:1.55}.note b{color:var(--text)}.back-home{display:inline-flex;margin-top:16px;color:#d4deec;text-decoration:none;font-weight:800;font-size:.86rem}
+#arUI{position:fixed;inset:0;z-index:10;pointer-events:none}.topbar,.bottomPanel,.centerHint,.reticleGuide{pointer-events:none}.topbar>* ,.bottomPanel>*{pointer-events:auto}.topbar{position:absolute;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));display:flex;gap:8px;align-items:center}.glass{border:1px solid var(--line);background:rgba(3,9,16,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;border-radius:14px;min-height:42px;padding:9px 12px}.topbar .glass{font-weight:800;cursor:pointer}.status{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.77rem;color:#dce9f7}.status b{color:var(--green)}
+.centerHint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(86vw,440px);text-align:center;padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:rgba(3,9,16,.72);backdrop-filter:blur(10px);font-size:.9rem;line-height:1.5}.centerHint b{display:block;color:var(--cyan);margin-bottom:4px}.centerHint.hidden{display:none}
+.bottomPanel{position:absolute;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding:9px;border:1px solid var(--line);border-radius:18px;background:rgba(3,9,16,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}.control{border:1px solid var(--line);background:rgba(255,255,255,.055);color:#fff;border-radius:12px;min-height:42px;padding:9px 12px;font-weight:800;cursor:pointer}.control.primary{background:#fff;color:#07101a;border-color:#fff}.control.warn{color:#ffdc86}.control:disabled{opacity:.45}.scaleReadout{font-size:.75rem;color:var(--muted);min-width:48px;text-align:center}
+#fallbackBadge{position:absolute;right:12px;top:64px;border:1px solid rgba(255,216,107,.3);background:rgba(43,32,4,.74);color:#ffe59a;border-radius:999px;padding:7px 10px;font-size:.66rem;font-weight:900;letter-spacing:.06em}
+#errorBox{position:fixed;z-index:50;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,520px);padding:19px;border:1px solid rgba(255,142,152,.36);border-radius:20px;background:rgba(30,8,12,.96);box-shadow:0 20px 80px rgba(0,0,0,.5)}#errorBox h2{margin:0 0 8px;font-size:1.25rem}#errorBox p{color:#ffd6da;line-height:1.55;margin:0 0 14px}.row{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:620px){.mode-grid{grid-template-columns:1fr}.mode{min-height:0}.hero h1{font-size:2.55rem}.bottomPanel{justify-content:flex-start;overflow:auto;flex-wrap:nowrap}.control{white-space:nowrap}.status{font-size:.7rem}.mode p{font-size:.82rem}}
+</style>
+</head>
+<body>
+<section id="landing">
+  <div class="wrap">
+    <div class="brand"><span class="brand-orb"></span><span><b>LAB ANTARIKSA</b><small>AR Tata Surya • tanpa marker</small></span></div>
+    <div class="hero">
+      <span class="pill">MARKERLESS AR</span>
+      <h1>Taruh Tata Surya<br><span>di ruang nyata.</span></h1>
+      <p>Tidak ada lagi gambar target, pattern, atau kode yang harus dipindai. Pilih mode AR sesuai kemampuan perangkat.</p>
+    </div>
+    <div class="mode-grid">
+      <button class="mode recommended" id="startWebXR">
+        <span class="support check" id="xrSupport">MEMERIKSA…</span>
+        <span class="icon">◎</span><small>AR RUANG • DIREKOMENDASIKAN</small>
+        <h2>Deteksi permukaan & letakkan objek</h2>
+        <p>Gerakkan HP untuk membaca meja atau lantai. Saat reticle muncul, ketuk layar untuk menaruh Tata Surya seperti AR modern.</p>
+      </button>
+      <button class="mode" id="startFallback">
+        <span class="support ok">KAMERA</span>
+        <span class="icon">📷</span><small>MODE KOMPATIBILITAS</small>
+        <h2>AR Kamera Universal</h2>
+        <p>Tata Surya tampil di atas kamera tanpa marker. Bisa digeser, diperbesar, diperkecil, dan diputar. Tidak membutuhkan ARCore.</p>
+      </button>
+    </div>
+    <div class="note"><b>Bedanya:</b> AR Ruang memakai WebXR hit-test sehingga objek dapat ditempatkan pada permukaan nyata. Mode Kamera Universal adalah fallback visual untuk perangkat yang tidak menyediakan WebXR/ARCore.</div>
+    <a class="back-home" href="index.html">← Kembali ke Laboratorium Tata Surya</a>
+  </div>
+</section>
+
+<video id="cameraVideo" class="hidden" playsinline muted autoplay></video>
+<canvas id="fallbackCanvas" class="hidden"></canvas>
+<div id="xrCanvasHost"></div>
+
+<div id="arUI" class="hidden">
+  <div class="topbar">
+    <button class="glass" id="exitAR">← Keluar</button>
+    <div class="glass status" id="statusText">Menyiapkan AR…</div>
+  </div>
+  <div id="fallbackBadge" class="hidden">MODE KAMERA • TANPA SURFACE TRACKING</div>
+  <div class="centerHint" id="centerHint"><b>Gerakkan HP perlahan</b>Biarkan kamera membaca meja atau lantai sampai reticle muncul.</div>
+  <div class="bottomPanel">
+    <button class="control" id="smaller">− Kecilkan</button>
+    <span class="scaleReadout" id="scaleReadout">100%</span>
+    <button class="control" id="larger">+ Besarkan</button>
+    <button class="control" id="pause">⏸ Jeda</button>
+    <button class="control" id="reposition">↻ Posisikan ulang</button>
+    <button class="control warn hidden" id="orientationBtn">Aktifkan gerak HP</button>
+  </div>
+</div>
+
+<div id="errorBox" class="hidden">
+  <h2 id="errorTitle">AR tidak dapat dimulai</h2>
+  <p id="errorText"></p>
+  <div class="row"><button class="control primary" id="errorFallback">Pakai Mode Kamera</button><button class="control" id="errorClose">Kembali</button></div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.min.js';
+
+const $ = id => document.getElementById(id);
+let currentMode = null;
+let renderer = null, scene = null, camera = null, solarRoot = null, reticle = null;
+let hitTestSource = null, hitTestSourceRequested = false, referenceSpace = null;
+let placed = false, paused = false, solarScale = 1, lastTime = 0;
+let pivots = [], planetMeshes = [];
+let mediaStream = null, fallbackRAF = 0;
+let drag = {active:false,x:0,y:0,lastX:0,lastY:0,pointers:new Map(),pinchStart:0,scaleStart:1};
+let orientationEnabled = false, yaw0 = null, orientation = {alpha:0,beta:0,gamma:0};
+
+function show(el, yes=true){ el.classList.toggle('hidden', !yes); }
+function setStatus(text, strong=false){ $('statusText').innerHTML = strong ? `<b>${text}</b>` : text; }
+function showError(title, text){ $('errorTitle').textContent=title; $('errorText').textContent=text; show($('errorBox'),true); }
+function hideError(){ show($('errorBox'),false); }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function basic(color, opacity=1){ return new THREE.MeshBasicMaterial({color, transparent:opacity<1, opacity, side:THREE.DoubleSide, depthWrite:opacity>.7}); }
+function sphere(r,color){ const m=new THREE.Mesh(new THREE.SphereGeometry(r,28,20),basic(color)); m.userData.baseRadius=r; return m; }
+function orbitLine(radius){
+  const pts=[]; for(let i=0;i<=96;i++){ const a=(i/96)*Math.PI*2; pts.push(new THREE.Vector3(Math.cos(a)*radius,0,Math.sin(a)*radius)); }
+  const g=new THREE.BufferGeometry().setFromPoints(pts); return new THREE.Line(g,new THREE.LineBasicMaterial({color:0x94a9c1,transparent:true,opacity:.46}));
+}
+function makeSolarSystem(){
+  pivots=[]; planetMeshes=[];
+  const root=new THREE.Group(); root.name='solar-system';
+  const sun=sphere(.13,0xffb21f); sun.position.y=.13; root.add(sun); planetMeshes.push(sun);
+  const glow=new THREE.Mesh(new THREE.RingGeometry(.15,.195,64),basic(0xffd46a,.22)); glow.rotation.x=-Math.PI/2; glow.position.y=.012; root.add(glow);
+  const data=[
+    ['Merkurius',.23,.025,0xa7a7a7,4.0,8],['Venus',.31,.039,0xd5aa76,6.2,48],['Bumi',.40,.041,0x3e8df0,8.2,92],['Mars',.49,.031,0xcf6446,10.8,135],
+    ['Jupiter',.63,.074,0xc8a27a,14.6,181],['Saturnus',.77,.064,0xdac58f,18.2,225],['Uranus',.91,.052,0x84d7df,22.0,269],['Neptunus',1.05,.050,0x4b70d7,26.5,314]
+  ];
+  data.forEach((d,i)=>{
+    const [name,dist,rad,color,period,deg]=d; const line=orbitLine(dist); line.position.y=.008; root.add(line);
+    const pivot=new THREE.Group(); pivot.rotation.y=THREE.MathUtils.degToRad(deg);
+    const p=sphere(rad,color); p.name=name; p.position.set(dist,.11,0); pivot.add(p); planetMeshes.push(p);
+    if(i===5){ const ring=new THREE.Mesh(new THREE.RingGeometry(rad*1.35,rad*1.9,48),basic(0xe6d4a4,.82)); ring.rotation.x=-Math.PI/2; ring.position.copy(p.position); pivot.add(ring); }
+    root.add(pivot); pivots.push({pivot,period,planet:p});
+  });
+  root.traverse(o=>{if(o.isMesh||o.isLine){o.frustumCulled=false;}});
+  return root;
+}
+function animateSolar(time){
+  if(!lastTime) lastTime=time; const dt=Math.min((time-lastTime)/1000,.05); lastTime=time;
+  if(!paused){ pivots.forEach(x=>{x.pivot.rotation.y += dt*(Math.PI*2/x.period); x.planet.rotation.y += dt*.8;}); }
+}
+function applyScale(){ if(solarRoot) solarRoot.scale.setScalar(solarScale); $('scaleReadout').textContent=`${Math.round(solarScale*100)}%`; }
+
+async function detectXR(){
+  let ok=false;
+  try{ ok=!!navigator.xr && await navigator.xr.isSessionSupported('immersive-ar'); }catch(e){ ok=false; }
+  const badge=$('xrSupport'); badge.textContent=ok?'DIDUKUNG':'TIDAK TERSEDIA'; badge.className=`support ${ok?'ok':'no'}`;
+  $('startWebXR').dataset.supported=ok?'1':'0';
+  return ok;
+}
+
+function setupCommonScene(canvas=null){
+  scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.01,50);
+  renderer=new THREE.WebGLRenderer({canvas:canvas||undefined,alpha:true,antialias:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight); renderer.setClearColor(0x000000,0);
+  solarRoot=makeSolarSystem(); solarRoot.visible=false; scene.add(solarRoot); solarScale=1; placed=false; paused=false; lastTime=0; applyScale();
+}
+
+async function startWebXR(){
+  hideError();
+  const supported = $('startWebXR').dataset.supported==='1' || await detectXR();
+  if(!supported){ showError('AR Ruang tidak tersedia','Browser atau perangkat ini tidak menyediakan WebXR immersive-ar. Gunakan Mode Kamera Universal agar tetap dapat memakai kamera tanpa marker.'); return; }
+  currentMode='webxr'; show($('landing'),false); show($('arUI'),true); show($('fallbackBadge'),false); show($('centerHint'),true); setStatus('Menyiapkan WebXR…');
+  setupCommonScene(); renderer.domElement.id='xrCanvas'; document.getElementById('xrCanvasHost').appendChild(renderer.domElement); renderer.xr.enabled=true; renderer.xr.setReferenceSpaceType('local');
+  reticle=new THREE.Mesh(new THREE.RingGeometry(.07,.085,40).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x74eeff,side:THREE.DoubleSide}));
+  reticle.matrixAutoUpdate=false; reticle.visible=false; scene.add(reticle);
+  try{
+    const session = await navigator.xr.requestSession('immersive-ar',{requiredFeatures:['hit-test'],optionalFeatures:['dom-overlay','anchors','light-estimation'],domOverlay:{root:$('arUI')}});
+    await renderer.xr.setSession(session);
+    referenceSpace=await session.requestReferenceSpace('local');
+    session.addEventListener('end',()=>cleanupToLanding());
+    session.addEventListener('select',()=>{
+      if(!reticle.visible) return;
+      reticle.matrix.decompose(solarRoot.position,solarRoot.quaternion,solarRoot.scale);
+      solarScale=.36; solarRoot.scale.setScalar(solarScale); solarRoot.visible=true; placed=true; show($('centerHint'),false); setStatus('Tata Surya ditempatkan • ketuk lagi untuk memindahkan',true); applyScale();
+    });
+    renderer.setAnimationLoop((time,frame)=>{
+      animateSolar(time);
+      if(frame){
+        const session=renderer.xr.getSession();
+        if(!hitTestSourceRequested){
+          session.requestReferenceSpace('viewer').then(viewer=>session.requestHitTestSource({space:viewer})).then(src=>{hitTestSource=src;}).catch(()=>{});
+          hitTestSourceRequested=true;
+        }
+        if(hitTestSource){
+          const hits=frame.getHitTestResults(hitTestSource);
+          if(hits.length){ const pose=hits[0].getPose(referenceSpace); reticle.visible=true; reticle.matrix.fromArray(pose.transform.matrix); if(!placed){setStatus('Permukaan ditemukan • ketuk layar untuk menaruh Tata Surya',true); show($('centerHint'),false);} }
+          else{ reticle.visible=false; if(!placed){setStatus('Mencari permukaan…'); show($('centerHint'),true);} }
+        }
+      }
+      renderer.render(scene,camera);
+    });
+  }catch(e){
+    console.error(e); cleanupGraphics(); show($('landing'),true); show($('arUI'),false); showError('WebXR gagal dimulai',e?.message||'Sesi AR ditolak atau layanan AR pada perangkat tidak tersedia.');
+  }
+}
+
+async function startFallback(){
+  hideError(); currentMode='fallback'; show($('landing'),false); show($('arUI'),true); show($('fallbackBadge'),true); show($('centerHint'),true);
+  $('centerHint').innerHTML='<b>AR Kamera Universal</b>Ketuk/geser layar untuk memosisikan Tata Surya. Cubit dua jari untuk mengubah ukuran.'; setStatus('Meminta akses kamera…');
+  try{
+    mediaStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+    const video=$('cameraVideo'); video.srcObject=mediaStream; show(video,true); await video.play();
+    show($('fallbackCanvas'),true); setupCommonScene($('fallbackCanvas')); solarRoot.visible=true; solarRoot.position.set(0,0,-3.2); solarRoot.rotation.x=-.14; solarScale=.86; applyScale(); placed=true;
+    camera.position.set(0,.25,0); camera.lookAt(0,0,-3);
+    bindFallbackGestures();
+    const canOrientation = typeof DeviceOrientationEvent!=='undefined'; show($('orientationBtn'),canOrientation); setStatus('Kamera aktif • geser, cubit, atau putar objek',true); show($('centerHint'),false);
+    const loop=(t)=>{ fallbackRAF=requestAnimationFrame(loop); animateSolar(t); if(orientationEnabled){const gy=THREE.MathUtils.degToRad((orientation.gamma||0)*.13);const bx=THREE.MathUtils.degToRad(((orientation.beta||90)-90)*.08);camera.rotation.set(bx,-gy,0,'YXZ');} renderer.render(scene,camera);}; loop(performance.now());
+  }catch(e){ console.error(e); showError('Kamera tidak dapat dibuka','Pastikan izin kamera untuk situs GitHub Pages ini sudah diberikan, lalu coba lagi.'); }
+}
+
+function bindFallbackGestures(){
+  const canvas=$('fallbackCanvas'); if(canvas.dataset.bound) return; canvas.dataset.bound='1';
+  canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture?.(e.pointerId);drag.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});drag.active=true;drag.lastX=e.clientX;drag.lastY=e.clientY;if(drag.pointers.size===2){const a=[...drag.pointers.values()];drag.pinchStart=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);drag.scaleStart=solarScale;}});
+  canvas.addEventListener('pointermove',e=>{if(!drag.pointers.has(e.pointerId)||!solarRoot)return;drag.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(drag.pointers.size===1){const dx=e.clientX-drag.lastX,dy=e.clientY-drag.lastY;solarRoot.position.x+=dx*.0047;solarRoot.position.y-=dy*.0047;solarRoot.rotation.y+=dx*.002;drag.lastX=e.clientX;drag.lastY=e.clientY;}else if(drag.pointers.size===2){const a=[...drag.pointers.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);solarScale=clamp(drag.scaleStart*(d/Math.max(drag.pinchStart,1)),.35,2.4);applyScale();}});
+  const end=e=>{drag.pointers.delete(e.pointerId);if(drag.pointers.size<2){drag.lastX=e.clientX;drag.lastY=e.clientY;}if(!drag.pointers.size)drag.active=false;}; canvas.addEventListener('pointerup',end); canvas.addEventListener('pointercancel',end);
+}
+
+async function enableOrientation(){
+  try{ if(typeof DeviceOrientationEvent.requestPermission==='function'){const p=await DeviceOrientationEvent.requestPermission();if(p!=='granted')throw new Error('Izin sensor tidak diberikan');}
+    if(!orientationEnabled){window.addEventListener('deviceorientation',onOrientation,true);orientationEnabled=true;$('orientationBtn').textContent='Gerak HP aktif';$('orientationBtn').classList.remove('warn');}
+  }catch(e){showError('Sensor gerak tidak aktif',e.message||'Browser tidak memberikan akses ke sensor orientasi.');}
+}
+function onOrientation(e){orientation.alpha=e.alpha||0;orientation.beta=e.beta||0;orientation.gamma=e.gamma||0;if(yaw0===null)yaw0=orientation.alpha;}
+
+function cleanupGraphics(){
+  if(renderer){ try{renderer.setAnimationLoop(null);renderer.dispose();renderer.domElement?.remove();}catch{} }
+  renderer=scene=camera=solarRoot=reticle=null; hitTestSource=null; hitTestSourceRequested=false; referenceSpace=null; pivots=[]; planetMeshes=[];
+}
+function cleanupToLanding(){
+  cancelAnimationFrame(fallbackRAF); fallbackRAF=0; if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null;}
+  const v=$('cameraVideo'); v.srcObject=null; show(v,false); show($('fallbackCanvas'),false); cleanupGraphics(); currentMode=null; placed=false; yaw0=null; orientationEnabled=false; show($('arUI'),false); show($('landing'),true); hideError(); detectXR();
+}
+async function exitAR(){
+  if(currentMode==='webxr'&&renderer?.xr?.getSession()){ try{await renderer.xr.getSession().end();return;}catch{} }
+  cleanupToLanding();
+}
+function reposition(){ if(!solarRoot)return; if(currentMode==='webxr'){solarRoot.visible=false;placed=false;show($('centerHint'),true);$('centerHint').innerHTML='<b>Gerakkan HP perlahan</b>Biarkan kamera membaca meja atau lantai sampai reticle muncul.';setStatus('Mencari permukaan…');}else{solarRoot.position.set(0,0,-3.2);solarRoot.rotation.set(-.14,0,0);solarScale=.86;applyScale();setStatus('Posisi dikembalikan ke tengah',true);} }
+
+document.querySelector('.topbar').addEventListener('beforexrselect',e=>e.preventDefault()); document.querySelector('.bottomPanel').addEventListener('beforexrselect',e=>e.preventDefault());
+$('startWebXR').addEventListener('click',startWebXR); $('startFallback').addEventListener('click',startFallback); $('exitAR').addEventListener('click',exitAR); $('errorClose').addEventListener('click',()=>{hideError();cleanupToLanding();}); $('errorFallback').addEventListener('click',()=>{hideError();cleanupToLanding();setTimeout(startFallback,60);});
+$('smaller').addEventListener('click',()=>{solarScale=clamp(solarScale*.82,.18,2.5);applyScale();}); $('larger').addEventListener('click',()=>{solarScale=clamp(solarScale*1.22,.18,2.5);applyScale();});
+$('pause').addEventListener('click',()=>{paused=!paused;$('pause').textContent=paused?'▶ Lanjut':'⏸ Jeda';}); $('reposition').addEventListener('click',reposition); $('orientationBtn').addEventListener('click',enableOrientation);
+window.addEventListener('resize',()=>{if(renderer&&currentMode==='fallback'){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight,false);}});
+detectXR();
+</script>
+</body>
+</html>
